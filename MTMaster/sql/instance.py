@@ -14,12 +14,13 @@ class Instance(Base):
     name = Column(VARCHAR(32), unique=True)
     address = Column(VARCHAR(15), unique=True)
     agent = Column(INTEGER(unsigned=True), ForeignKey("agent.id"))
+    cluster = Column(INTEGER(unsigned=True), ForeignKey("cluster.id"), nullable=True, default=None)
     type = Column(VARCHAR(32))
-    enabled = Column(BOOLEAN)
+    enabled = Column(BOOLEAN, default=False)
     created = Column(TIMESTAMP, server_default=func.current_timestamp())
     mode = Column(VARCHAR(32), default="off")
 
     def __repr__(self):
         return (f"Instance({self.id} | name={self.name} | address={self.address}" +
-                f" | agent={self.agent} | type={self.type} | enabled={self.enabled}" +
-                f" | created={self.created} | mode={self.mode})")
+                f" | agent={self.agent} | type={self.type} | cluster={self.cluster}" +
+                f" | enabled={self.enabled} | created={self.created} | mode={self.mode})")

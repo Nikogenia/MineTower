@@ -5,16 +5,13 @@ from sql.base import Base
 from sql.column import Column
 
 
-class Motd(Base):
+class Cluster(Base):
 
-    __tablename__ = "motd"
+    __tablename__ = "cluster"
 
     id = Column(INTEGER(unsigned=True), primary_key=True)
     name = Column(VARCHAR(32), unique=True)
-    line1 = Column(VARCHAR(255))
-    line2 = Column(VARCHAR(255))
     created = Column(TIMESTAMP, server_default=func.current_timestamp())
 
     def __repr__(self):
-        return (f"Motd({self.id} | name={self.name}" +
-                f" | line1={self.line1} | line2={self.line2} | created={self.created})")
+        return f"Cluster({self.id} | name={self.name} | created={self.created})"

@@ -1,0 +1,16 @@
+# GLOBAL
+
+# Jetbrains IDE
+**/.idea
+
+# IML
+**/*.iml
+
+# Target
+**/target
+
+# Python
+**/__pycache__
+
+# Test
+Test/

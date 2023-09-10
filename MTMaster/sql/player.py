@@ -17,10 +17,11 @@ class Player(Base):
     time_played = Column(INTEGER(unsigned=True), default=0)
     first_joined = Column(TIMESTAMP, nullable=True, default=None)
     number_joined = Column(INTEGER(unsigned=True), default=0)
+    last_joined = Column(TIMESTAMP, nullable=True, default=None)
     last_disconnect = Column(TIMESTAMP, nullable=True, default=None)
 
     def __repr__(self):
         return (f"Player({self.id} | uuid={self.uuid} | name={self.name}" +
                 f" | server={self.server} | online={self.online} | time_played={self.time_played}" +
                 f" | first_joined={self.first_joined} | number_joined={self.number_joined}" +
-                f" | last_disconnect={self.last_disconnect})")
+                f" | last_joined={self.last_joined} | last_disconnect={self.last_disconnect})")

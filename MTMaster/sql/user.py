@@ -16,7 +16,8 @@ class User(Base):
     password = Column(TEXT)
     admin = Column(BOOLEAN, default=False)
     created = Column(TIMESTAMP, server_default=func.current_timestamp())
+    last_login = Column(TIMESTAMP, nullable=True, default=None)
 
     def __repr__(self):
         return (f"User({self.id} | name={self.name} | password={self.password}" +
-                f" | admin={self.admin} | created={self.created})")
+                f" | admin={self.admin} | created={self.created} | last_login={self.last_login})")

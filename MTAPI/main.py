@@ -1,5 +1,6 @@
 from app import app
 from sio import sio
+import route
 
 
 if __name__ == '__main__':

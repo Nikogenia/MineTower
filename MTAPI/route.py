@@ -157,6 +157,9 @@ def route_user_login():
     if not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "invalid_credentials", "message": "The username or password is incorrect!"}), 200
 
+    user.last_login = db.func.now()
+    db.session.commit()
+
     set_user(user)
 
     return jsonify({

@@ -13,7 +13,7 @@ TEMPLATE = """# -------------
 # Debug mode
 #DEBUG=
 
-# Session secret key
+# Secret key
 SECRET_KEY=#KEY#
 
 # MySQL Server

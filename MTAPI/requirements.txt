@@ -1,0 +1,15 @@
+flask
+
+flask-sqlalchemy
+mysqlclient
+
+flask-bcrypt
+flask-session
+flask-cors
+
+flask-socketio
+eventlet
+
+redis
+
+python-dotenv

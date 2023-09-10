@@ -19,7 +19,7 @@ sql:
     
 # API
 api:
-  url: "ws://localhost:8080"
+  url: "http://localhost:8080"
 """
 
 

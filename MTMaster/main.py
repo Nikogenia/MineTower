@@ -1,16 +1,19 @@
+import os
 from logging import Logger, Formatter, StreamHandler, INFO, DEBUG
 import sys
 
 from constant import *
 import sql
 import config
+from dc import Docker
+from api import API
 
 
 class Main:
 
     def __init__(self):
 
-        self.debug = "-d" in sys.argv or "--debug" in sys.argv
+        self.debug = "-d" in sys.argv or "--debug" in sys.argv or "DEBUG" in os.environ
 
         formatter = Formatter("[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s",
                               datefmt='%b %d %H:%M:%S')
@@ -29,6 +32,10 @@ class Main:
 
         self.sql = sql.SQL(self)
         self.sql.init()
+
+        self.dc = Docker(self)
+
+        self.api = API(self)
 
     def run(self):
 

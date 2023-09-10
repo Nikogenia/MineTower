@@ -1,3 +1,8 @@
 pyyaml
+
 sqlalchemy
 mysqlclient
+
+docker
+
+python-socketio[client]

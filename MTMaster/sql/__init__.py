@@ -25,7 +25,8 @@ class SQL:
             f"@{self.config['host']}:{self.config['port']}" +
             f"/{self.config['database']}?charset=utf8mb4")
 
-        self.engine.echo = True
+        if self.main.debug:
+            self.engine.echo = True
 
         Base.metadata.create_all(bind=self.engine)
 

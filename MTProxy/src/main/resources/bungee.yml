@@ -1,0 +1,5 @@
+name: MTProxy
+version: '${project.version}'
+main: de.nikogenia.mtproxy.Main
+author: Nikogenia
+description: The Waterfall plugin for the proxy of the server network management engine MineTower

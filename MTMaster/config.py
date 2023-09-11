@@ -9,7 +9,7 @@ TEMPLATE = """# ----------------
 # MineTower Master
 # ----------------
 
-# MySQL Server
+# MySQL server
 sql:
   host: localhost
   port: 3306

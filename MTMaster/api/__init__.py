@@ -9,9 +9,12 @@ class API:
 
         self.client = socketio.Client(logger=self.main.debug, engineio_logger=self.main.debug)
 
-        self.client.connect(self.config["url"])
-
-        self.client.event(self.get_servers)
+        self.client.connect(self.config["url"],
+                            auth={
+                                "key": self.main.sql.get_general_entry("api_key"),
+                                "id": "master"
+                            },
+                            namespaces=["/api"])
 
     @property
     def config(self):

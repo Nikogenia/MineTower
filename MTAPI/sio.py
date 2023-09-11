@@ -19,32 +19,36 @@ class API(Namespace):
         global master
 
         if not auth:
-            emit("error", {
+            emit("api_error", {
                 "error": "missing_auth",
                 "message": "Missing API authentication!"
             })
             disconnect()
+            return
 
         if "key" not in auth:
-            emit("error", {
+            emit("api_error", {
                 "error": "missing_auth",
                 "message": "Missing API authentication!"
             })
             disconnect()
+            return
 
         if auth["key"] != General.query.filter_by(name="api_key").first().value:
-            emit("error", {
+            emit("api_error", {
                 "error": "invalid_key",
                 "message": "Invalid API key!"
             })
             disconnect()
+            return
 
         if "id" not in auth:
-            emit("error", {
+            emit("api_error", {
                 "error": "missing_id",
                 "message": "Missing API id!"
             })
             disconnect()
+            return
 
         if auth["id"] == "master":
             master = request.sid
@@ -54,17 +58,18 @@ class API(Namespace):
         print(f"New API socket connection from {auth['id']}")
 
 
-class Backend(Namespace):
+class Control(Namespace):
 
     def on_connect(self):
 
         user = get_user()
         if isinstance(user, tuple):
-            emit("error", user[0].json)
+            emit("control_error", user[0].json)
             disconnect()
+            return
 
-        print(f"New backend socket connection from {user.name}")
+        print(f"New control socket connection from {user.name}")
 
 
 sio.on_namespace(API("/api"))
-sio.on_namespace(Backend("/backend"))
+sio.on_namespace(Control("/control"))

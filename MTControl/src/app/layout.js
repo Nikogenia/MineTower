@@ -1,9 +1,11 @@
 'use client'
 import { useState } from 'react'
-import Footer from './Footer'
-import Header from './Header'
+import Footer from '@/components/Footer'
+import Header from '@/components/Header'
 import './globals.css'
-import { MainContext } from './MainContext'
+import { MainContext } from '@/MainContext'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata = {
   title: 'MineTower',
@@ -14,8 +16,8 @@ export default function RootLayout({children}) {
 
   const [title, setTitle] = useState("")
   const [user, setUser] = useState({
-    name: "Nikogenia",
-    admin: true
+    name: "",
+    admin: false
   })
 
   const state = {
@@ -29,7 +31,8 @@ export default function RootLayout({children}) {
     <html lang="en" className='md:text-lg'>
       <body>
         <MainContext.Provider value={state}>
-          <main className='flex flex-col h-screen bg-neutral'>
+          <main className='flex flex-col screen-height bg-bg-neutral text-fg-primary'>
+            <ToastContainer position="top-right" theme='colored'/>
             <Header />
             {children}
             <Footer />

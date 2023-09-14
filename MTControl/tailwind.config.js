@@ -8,12 +8,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        neutral: '#0d1b2a',
-        primary: '#1b263b',
-        secondary: '#fca311',
+        "bg-neutral": '#27276b',
+        "bg-primary": '#383896',
+        "bg-secondary": '#4e4ebc',
+        "fg-primary": '#ffffff',
+        "fg-secondary": '#bfbfe8',
         accent: '#fca311'
+      },
+      fontFamily: {
+        sans: ['Open Sans', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms')
+  ]
 }

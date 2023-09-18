@@ -1,10 +1,9 @@
 'use client'
 import { useContext, useEffect } from "react"
-import { MainContext } from "@/MainContext"
-import { PulseLoader } from "react-spinners"
-import tailwindConfig from "../../tailwind.config"
+import { MainContext } from "@/components/MainContext"
 import { getUser } from "./utils/api"
 import { useRouter } from "next/navigation"
+import Loading from "./components/Loading"
 
 export default function Home() {
 
@@ -18,9 +17,7 @@ export default function Home() {
 
   if (user.name == "") {
     return (
-      <div className="h-full flex items-center justify-center">
-        <PulseLoader color={tailwindConfig.theme.extend.colors["fg-primary"]} />
-      </div>
+      <Loading />
     )
   }
 

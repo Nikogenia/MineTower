@@ -14,6 +14,8 @@ master = None
 
 class API(Namespace):
 
+    name = "/api"
+
     def on_connect(self, auth):
 
         global master
@@ -22,7 +24,7 @@ class API(Namespace):
             emit("api_error", {
                 "error": "missing_auth",
                 "message": "Missing API authentication!"
-            })
+            }, namespace=self.name)
             disconnect()
             return
 
@@ -30,7 +32,7 @@ class API(Namespace):
             emit("api_error", {
                 "error": "missing_auth",
                 "message": "Missing API authentication!"
-            })
+            }, namespace=self.name)
             disconnect()
             return
 
@@ -38,7 +40,7 @@ class API(Namespace):
             emit("api_error", {
                 "error": "invalid_key",
                 "message": "Invalid API key!"
-            })
+            }, namespace=self.name)
             disconnect()
             return
 
@@ -46,7 +48,7 @@ class API(Namespace):
             emit("api_error", {
                 "error": "missing_id",
                 "message": "Missing API id!"
-            })
+            }, namespace=self.name)
             disconnect()
             return
 
@@ -57,19 +59,62 @@ class API(Namespace):
 
         print(f"New API socket connection from {auth['id']}")
 
+    def on_servers(self, data):
+
+        emit("servers", data, broadcast=True, namespace=Control.name)
+
+    def on_agents(self, data):
+
+        emit("agents", data, broadcast=True, namespace=Control.name)
+
+    def on_logs(self, data):
+
+        emit("logs", data, broadcast=True, namespace=Control.name)
+
 
 class Control(Namespace):
+
+    name = "/control"
 
     def on_connect(self):
 
         user = get_user()
         if isinstance(user, tuple):
-            emit("control_error", user[0].json)
+            emit("control_error", user[0].json, namespace=self.name)
             disconnect()
             return
 
         print(f"New control socket connection from {user.name}")
 
+    def forward_to_master(self, data, event):
 
-sio.on_namespace(API("/api"))
-sio.on_namespace(Control("/control"))
+        user = get_user()
+        if isinstance(user, tuple):
+            emit("control_error", user[0].json, namespace=self.name)
+            disconnect()
+            return
+
+        if not master:
+            emit("control_error", {
+                "error": "master_offline",
+                "message": "The master is offline!"
+            }, namespace=self.name)
+            return
+
+        emit(event, data, namespace=API.name, to=master)
+
+    def on_servers(self, data):
+
+        self.forward_to_master(data, "servers")
+
+    def on_agents(self, data):
+
+        self.forward_to_master(data, "agents")
+
+    def on_logs(self, data):
+
+        self.forward_to_master(data, "logs")
+
+
+sio.on_namespace(API(API.name))
+sio.on_namespace(Control(Control.name))

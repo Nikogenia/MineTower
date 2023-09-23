@@ -1,17 +1,21 @@
 import os
 from logging import Logger, Formatter, StreamHandler, INFO, DEBUG
 import sys
+import signal
 
 from constant import *
 import sql
 import config
 from dc import Docker
 from api import API
+from server import ServerManager
 
 
 class Main:
 
     def __init__(self):
+
+        self.running = True
 
         self.debug = "-d" in sys.argv or "--debug" in sys.argv or "DEBUG" in os.environ
 
@@ -37,12 +41,28 @@ class Main:
 
         self.api = API(self)
 
+        self.sm = ServerManager(self)
+
     def run(self):
 
-        pass
+        self.api.run()
+
+    def quit(self, *args):
+
+        if args:
+            self.logger.info("Keyboard interrupted! Quit")
+
+        self.running = False
+
+        self.api.quit()
+
+        self.logger.info("Exit")
 
 
 if __name__ == '__main__':
 
     main = Main()
+
     main.run()
+
+    signal.signal(signal.SIGINT, main.quit)

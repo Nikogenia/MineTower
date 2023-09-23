@@ -18,7 +18,8 @@ export default function RootLayout({children}) {
   return (
     <html lang="en" className='md:text-lg'>
       <body>
-        <Root children={children} />
+        {// eslint-disable-next-line
+        } <Root children={children} />
       </body>
     </html>
   )

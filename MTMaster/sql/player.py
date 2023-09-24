@@ -1,4 +1,5 @@
 from sqlalchemy.dialects.mysql import INTEGER, VARCHAR, BOOLEAN, TIMESTAMP
+from sqlalchemy.sql import false, null, text
 from sqlalchemy import ForeignKey
 from sql.base import Base
 
@@ -13,12 +14,12 @@ class Player(Base):
     uuid = Column(VARCHAR(36), unique=True)
     name = Column(VARCHAR(16), unique=True)
     server = Column(INTEGER(unsigned=True), ForeignKey("instance.id"))
-    online = Column(BOOLEAN, default=False)
-    time_played = Column(INTEGER(unsigned=True), default=0)
-    first_joined = Column(TIMESTAMP, nullable=True, default=None)
-    number_joined = Column(INTEGER(unsigned=True), default=0)
-    last_joined = Column(TIMESTAMP, nullable=True, default=None)
-    last_disconnect = Column(TIMESTAMP, nullable=True, default=None)
+    online = Column(BOOLEAN, server_default=false())
+    time_played = Column(INTEGER(unsigned=True), server_default=text("0"))
+    first_joined = Column(TIMESTAMP, nullable=True, server_default=null())
+    number_joined = Column(INTEGER(unsigned=True), server_default=text("0"))
+    last_joined = Column(TIMESTAMP, nullable=True, server_default=null())
+    last_disconnect = Column(TIMESTAMP, nullable=True, server_default=null())
 
     def __repr__(self):
         return (f"Player({self.id} | uuid={self.uuid} | name={self.name}" +

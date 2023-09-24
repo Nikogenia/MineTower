@@ -2,7 +2,7 @@ import random
 import string
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 from sql.base import Base
 from sql.general import General
@@ -30,31 +30,42 @@ class SQL:
 
         Base.metadata.create_all(bind=self.engine)
 
-        self.session = sessionmaker(bind=self.engine)()
+        self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=False))
 
     @property
     def config(self):
         return self.main.config["sql"]
 
-    def define_general_entry(self, name, value):
+    def define_general_entry(self, session, name, value):
 
-        if not self.session.query(General).filter_by(name=name).first():
-            self.session.add(General(name=name, value=value))
+        if not session.query(General).filter_by(name=name).first():
+            session.add(General(name=name, value=value))
 
     def set_general_entry(self, name, value):
 
-        entry = self.session.query(General).filter_by(name=name).first()
+        session = self.Session()
+
+        entry = session.query(General).filter_by(name=name).first()
+
         if not entry:
-            self.session.add(General(name=name, value=value))
+            session.add(General(name=name, value=value))
         else:
             entry.value = value
-        self.session.commit()
+
+        session.commit()
+        self.Session.remove()
 
     def get_general_entry(self, name):
 
-        entry = self.session.query(General).filter_by(name=name).first()
+        session = self.Session()
+
+        entry = session.query(General).filter_by(name=name).first()
+
         if not entry:
+            self.Session.remove()
             return ""
+
+        self.Session.remove()
         return entry.value
 
     def init(self):
@@ -64,24 +75,31 @@ class SQL:
 
     def init_agent(self):
 
-        if not self.session.query(Agent).filter_by(name="master").first():
-            self.session.add(Agent(name="master"))
-        self.session.commit()
+        session = self.Session()
+
+        if not session.query(Agent).filter_by(name="master").first():
+            session.add(Agent(name="master"))
+
+        session.commit()
+        self.Session.remove()
 
     def init_general(self):
 
-        self.define_general_entry("name", "minetower")
-        self.define_general_entry("full_name", "MineTower")
+        session = self.Session()
 
-        self.define_general_entry("docker_network", "minetower")
-        self.define_general_entry("docker_prefix", "minetower-")
-        self.define_general_entry("docker_root_path", "/root/minetower")
+        self.define_general_entry(session, "name", "minetower")
+        self.define_general_entry(session, "full_name", "MineTower")
+
+        self.define_general_entry(session, "docker_network", "minetower")
+        self.define_general_entry(session, "docker_prefix", "minetower-")
+        self.define_general_entry(session, "docker_root_path", "/root/minetower")
 
         key = "".join(random.choice(string.ascii_letters + string.digits) for i in range(32))
-        self.define_general_entry("api_key", key)
+        self.define_general_entry(session, "api_key", key)
 
-        self.define_general_entry("time_zone", "Europe/Berlin")
+        self.define_general_entry(session, "time_zone", "Europe/Berlin")
 
-        self.define_general_entry("motd", "")
+        self.define_general_entry(session, "motd", "")
 
-        self.session.commit()
+        session.commit()
+        self.Session.remove()

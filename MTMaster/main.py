@@ -45,6 +45,8 @@ class Main:
 
     def run(self):
 
+        self.sm.run()
+
         self.api.run()
 
     def quit(self, *args):
@@ -56,7 +58,13 @@ class Main:
 
         self.api.quit()
 
+        self.sm.quit()
+
         self.logger.info("Exit")
+
+    @property
+    def timezone(self):
+        return self.sql.get_general_entry("time_zone")
 
 
 if __name__ == '__main__':

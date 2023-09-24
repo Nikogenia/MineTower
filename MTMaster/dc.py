@@ -63,11 +63,11 @@ class Docker:
             if network.name == self.network:
                 return network
 
-    def get_logs(self, name):
+    def get_logs(self, name, stream):
 
         for container in self.get_containers():
             if container.name == name:
-                return container.logs(stream=True)
+                return container.logs(stream=stream)
 
     def pull_image(self, tag):
 
@@ -80,7 +80,7 @@ class Docker:
 
         self.client.images.pull(*tag.split(":"))
 
-    def create(self, name, image, address, ports, volumes):
+    def create(self, name, image, address, ports, volumes, env):
 
         for container in self.get_containers():
             if container.name == name:
@@ -96,7 +96,8 @@ class Docker:
             detach=True,
             stdin_open=True,
             volumes=volumes,
-            ports=ports
+            ports=ports,
+            environment=env
         )
 
         self.get_network().connect(container, ipv4_address=address)
@@ -109,3 +110,18 @@ class Docker:
                 self.main.logger.info(f"Start container {name}")
 
                 container.start()
+
+    def stop(self, name):
+
+        for container in self.get_containers():
+            if container.name == name:
+
+                self.main.logger.info(f"Stop container {name}")
+
+                container.stop()
+
+    def running(self, name):
+
+        for container in self.get_containers():
+            if container.name == name:
+                return container.status == "running"

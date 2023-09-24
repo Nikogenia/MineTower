@@ -16,6 +16,7 @@ class API:
         self.client.on("servers", self.servers, namespace=self.namespace)
         self.client.on("agents", self.agents, namespace=self.namespace)
         self.client.on("logs", self.logs, namespace=self.namespace)
+        self.client.on("change_mode", self.change_mode, namespace=self.namespace)
 
     @property
     def config(self):
@@ -99,3 +100,16 @@ class API:
             logs[server.instance.name] = server.logs
 
         self.client.emit("logs", logs, namespace=self.namespace)
+
+    def change_mode(self, data):
+
+        self.main.logger.debug(data)
+
+        self.main.sm.change_mode(data["server"], data["mode"])
+
+    def log_update(self, server, data):
+
+        self.client.emit("log_update", {
+            "server": server,
+            "data": data
+        }, namespace=self.namespace)

@@ -72,7 +72,7 @@ function Register({setUsers}) {
           <div className="text-4xl text-center mb-8">Register</div>
           <div className="flex flex-col items-center gap-2 mb-6 w-full">
             <div className="text-xl text-center">Username</div>
-            <input type="text" value={inputUsername} onChange={(e) => setInputUsername(e.target.value)} placeholder="admin"
+            <input type="text" value={inputUsername} onChange={(e) => setInputUsername(e.target.value)} placeholder="admin" autoFocus
             className="bg-bg-secondary p-1 rounded-lg border-fg-secondary hover:brightness-110
             form-input w-full placeholder-bg-neutral" />
           </div>

@@ -47,7 +47,7 @@ export default function User() {
         ) : <></>}
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-8 mb-8 w-full">
           <div className="text-xl w-32 text-center sm:text-right">Password</div>
-          <input type="password" value={inputPassword} onChange={(e) => setInputPassword(e.target.value)} placeholder="1234"
+          <input type="password" value={inputPassword} onChange={(e) => setInputPassword(e.target.value)} placeholder="1234" autoFocus
           className="bg-bg-secondary p-1 rounded-lg border-fg-secondary hover:brightness-110
           form-input w-full placeholder-bg-neutral" />
         </div>

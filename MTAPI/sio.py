@@ -71,6 +71,10 @@ class API(Namespace):
 
         emit("logs", data, broadcast=True, namespace=Control.name)
 
+    def on_log_update(self, data):
+
+        emit("log_update", data, broadcast=True, namespace=Control.name)
+
 
 class Control(Namespace):
 
@@ -114,6 +118,10 @@ class Control(Namespace):
     def on_logs(self, data):
 
         self.forward_to_master(data, "logs")
+
+    def on_change_mode(self, data):
+
+        self.forward_to_master(data, "change_mode")
 
 
 sio.on_namespace(API(API.name))

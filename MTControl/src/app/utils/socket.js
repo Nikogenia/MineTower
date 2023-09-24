@@ -19,34 +19,40 @@ function onDisconnect(socket) {
 
 function onLogs(data, setLogs) {
 
-    console.info("Got logs")
+    console.debug("Got logs")
     setLogs(data)
 
 }
 
 function onAgents(data, setAgents) {
 
-    console.info("Got agents")
+    console.debug("Got agents")
     setAgents(data.agents)
 
 }
 
 function onServers(data, setServers) {
 
-    console.info("Got servers")
+    console.debug("Got servers")
     setServers(data.servers)
 
 }
 
-function onLineUpdate(data, setLogs) {
+function onLogUpdate(data, setLogs) {
 
-    console.info("Got line update")
+    console.debug("Got log update")
     setLogs(prev => {
-        if (!(data.server in prev)) {
-            prev[data.server] = ""
-        }
-        prev[data.server] = prev[data.server] + data.line + "\n"
-        return prev
+        return {...prev, [data.server]: prev[data.server] + data.data}
+    })
+
+}
+
+export async function changeMode(socket, server, mode) {
+
+    console.debug("Change mode")
+    socket.emit("change_mode", {
+        server: server,
+        mode: mode
     })
 
 }
@@ -71,7 +77,7 @@ export async function manageSocket(socket, setSocket, setAgents, setServers, set
 
     socket.on("agents", (data) => onAgents(data, setAgents))
 
-    socket.on("line_update", (data) => onLineUpdate(data, setLogs))
+    socket.on("log_update", (data) => onLogUpdate(data, setLogs))
 
     socket.on("control_error", (data) => {
         console.error("Socket error: " + data.error)

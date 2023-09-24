@@ -4,7 +4,7 @@ import { MainContext } from "@/components/MainContext"
 import { getUser } from "@/utils/api"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import Loading from "@/components/Loading"
-import { manageSocket } from "@/utils/socket"
+import { changeMode, manageSocket } from "@/utils/socket"
 import { MdChevronRight, MdExpandMore, MdSend } from "react-icons/md"
 
 export default function Console() {
@@ -46,8 +46,6 @@ export default function Console() {
   const [logs, setLogs] = useState({})
   const [socket, setSocket] = useState(null)
 
-  console.log(servers, logs, agents)
-
   useEffect(() => {
     setTitle("Console")
     if (user.name == "") getUser(router, setUser, true)
@@ -70,7 +68,7 @@ export default function Console() {
     <div className="h-full flex flex-col md:flex-row items-center overflow-y-auto md:overflow-x-visible gap-6 p-6">
       <Servers agents={agents} servers={servers} showAgents={showAgents} setShowAgents={setShowAgents}
       selected={selected} setSelected={setSelected} />
-      <Control servers={servers} selected={selected} logs={logs} />
+      <Control servers={servers} selected={selected} logs={logs} socket={socket} />
     </div>
   )
 
@@ -136,7 +134,7 @@ function Server({server, selected, setSelected}) {
 
 }
 
-function Control({servers, selected, logs}) {
+function Control({servers, selected, logs, socket}) {
 
   const output = useRef()
 
@@ -157,6 +155,7 @@ function Control({servers, selected, logs}) {
   useEffect(() => {
     if (output.current == null) return
     if (selected in logs) output.current.value = logs[selected]
+    if (autoScroll) output.current.scrollTop = output.current.scrollHeight
   }, [logs, selected])
 
   if (selected == "") return (
@@ -173,9 +172,9 @@ function Control({servers, selected, logs}) {
 
   return (
     <div className="bg-bg-primary p-4 w-full h-full rounded-lg flex flex-col items-center">
-      <div className="text-3xl bg-bg-secondary rounded-lg py-1 px-2 text-center font-mono mb-3">{selected}</div>
-      <textarea className="bg-bg-secondary rounded-lg font-mono text-sm
-        border-fg-secondary hover:brightness-110 resize-none h-[25rem] md:h-full w-full p-1"
+      <div className="text-3xl bg-bg-secondary rounded-lg py-1 px-2 text-center font-mono mb-3">{server.name}</div>
+      <textarea className="bg-bg-secondary rounded-lg font-mono text-xs
+        border-fg-secondary resize-none h-[25rem] md:h-full w-full p-1"
         wrap="hard"
         ref={output}
         readOnly></textarea>
@@ -183,16 +182,16 @@ function Control({servers, selected, logs}) {
         <div className="flex w-full gap-1 mt-2">
           <div className="bg-red-700 text-red-200 text-xl font-mono font-bold w-full
             rounded-md border-red-600 border-2 text-center px-3 pt-0.5">OFFLINE</div>
-          <select value={server.mode} onChange={(e) => console.log(e.target.value)} className="text-xl rounded-md bg-accent text-bg-neutral
-            px-1 py-0.5 border border-bg-neutral hover:brightness-110 font-semibold text-center">
+          <select value={server.mode} onChange={(e) => changeMode(socket, server.name, e.target.value)} className="text-xl rounded-md bg-accent text-bg-neutral
+            px-3 py-0.5 border border-bg-neutral hover:brightness-110 font-semibold">
             {[
               ['off', 'Off'],
               ['manual', 'Manual'],
               ['failure', 'Restart Failure'],
               ['always', 'Restart Always'],
             ].map(([value, name]) => (
-              <option value={value} className="text-xl rounded mr-2 bg-accent text-bg-neutral
-              font-semibold border border-bg-neutral text-center hover:brightness-110">{name}</option>
+              <option key={value} value={value} className="text-xl rounded bg-accent text-bg-neutral
+              font-semibold border border-bg-neutral hover:brightness-110">{name}</option>
             ))}
           </select>
         </div>
@@ -213,16 +212,16 @@ function Control({servers, selected, logs}) {
           <div className="flex gap-1">
             <div className="bg-lime-700 text-lime-200 text-xl font-mono font-bold w-full xl:w-auto
               rounded-md border-lime-600 border-2 text-center px-3 pt-0.5">ONLINE</div>
-            <select value={server.mode} onChange={(e) => console.log(e.target.value)} className="text-xl rounded-md bg-accent text-bg-neutral
-              px-1 py-0.5 border border-bg-neutral hover:brightness-110 font-semibold text-center">
+            <select value={server.mode} onChange={(e) => changeMode(socket, server.name, e.target.value)} className="text-xl rounded-md bg-accent text-bg-neutral
+              px-3 py-0.5 border border-bg-neutral hover:brightness-110 font-semibold">
               {[
                 ['off', 'Off'],
                 ['manual', 'Manual'],
                 ['failure', 'Restart Failure'],
                 ['always', 'Restart Always'],
               ].map(([value, name]) => (
-                <option value={value} className="text-xl rounded mr-2 bg-accent text-bg-neutral
-                font-semibold border border-bg-neutral text-center hover:brightness-110">{name}</option>
+                <option key={value} value={value} className="text-xl rounded bg-accent text-bg-neutral
+                font-semibold border border-bg-neutral hover:brightness-110">{name}</option>
               ))}
             </select>
           </div>

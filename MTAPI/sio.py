@@ -59,6 +59,16 @@ class API(Namespace):
 
         print(f"New API socket connection from {auth['id']}")
 
+    def on_disconnect(self):
+
+        global master
+
+        if request.sid == master:
+            print("API socket connection to master lost")
+            master = None
+        else:
+            print("A API socket connection lost")
+
     def on_servers(self, data):
 
         emit("servers", data, broadcast=True, namespace=Control.name)
@@ -75,10 +85,48 @@ class API(Namespace):
 
         emit("log_update", data, broadcast=True, namespace=Control.name)
 
+    def on_command(self, data):
+
+        emit("command", data, broadcast=True, namespace=self.name, include_self=False)
+
+    def on_tab_complete(self, data):
+
+        emit("tab_complete", data, namespace=Control.name, to=data["session"])
+
 
 class Control(Namespace):
 
     name = "/control"
+
+    def setup_packet(self):
+
+        user = get_user()
+        if isinstance(user, tuple):
+            emit("control_error", user[0].json, namespace=self.name)
+            disconnect()
+            return None
+
+        if not master:
+            emit("control_error", {
+                "error": "master_offline",
+                "message": "The master is offline!"
+            }, namespace=self.name)
+            return None
+
+        return user
+
+    @staticmethod
+    def forward_packet(data, event):
+
+        emit(event, data, namespace=API.name, to=master)
+
+    def setup_forward_packet(self, data, event):
+
+        user = self.setup_packet()
+        if not user:
+            return
+
+        self.forward_packet(data, event)
 
     def on_connect(self):
 
@@ -90,38 +138,45 @@ class Control(Namespace):
 
         print(f"New control socket connection from {user.name}")
 
-    def forward_to_master(self, data, event):
+    def on_disconnect(self):
 
-        user = get_user()
-        if isinstance(user, tuple):
-            emit("control_error", user[0].json, namespace=self.name)
-            disconnect()
-            return
-
-        if not master:
-            emit("control_error", {
-                "error": "master_offline",
-                "message": "The master is offline!"
-            }, namespace=self.name)
-            return
-
-        emit(event, data, namespace=API.name, to=master)
+        print("A control socket connection lost")
 
     def on_servers(self, data):
 
-        self.forward_to_master(data, "servers")
+        self.setup_forward_packet(data, "servers")
 
     def on_agents(self, data):
 
-        self.forward_to_master(data, "agents")
+        self.setup_forward_packet(data, "agents")
 
     def on_logs(self, data):
 
-        self.forward_to_master(data, "logs")
+        self.setup_forward_packet(data, "logs")
 
     def on_change_mode(self, data):
 
-        self.forward_to_master(data, "change_mode")
+        self.setup_forward_packet(data, "change_mode")
+
+    def on_command(self, data):
+
+        user = self.setup_packet()
+        if not user:
+            return
+
+        data["user"] = user.name
+
+        self.forward_packet(data, "command")
+
+    def on_tab_complete(self, data):
+
+        user = self.setup_packet()
+        if not user:
+            return
+
+        data["session"] = request.sid
+
+        emit("tab_complete", data, namespace=API.name, broadcast=True)
 
 
 sio.on_namespace(API(API.name))

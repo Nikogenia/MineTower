@@ -1,5 +1,6 @@
 import time
 
+from constant import DOCKER_IMAGE_PREFIX
 from .server import Server
 
 
@@ -7,20 +8,20 @@ class WaterfallServer(Server):
 
     def running(self):
 
-        return self.dc.running("minetower-proxy")
+        return self.dc.running(self.docker_name)
 
     def create(self):
 
         self.logger.info(f"Create server {self.instance.name}")
-        self.dc.create("minetower-proxy", "nikogenia/mt-waterfall:latest",
-                    "172.19.0.21", {"25565/tcp": 25565},
-                    [r"C:\Users\Nikocraft\Dev\MineTower\Test\proxy:/proxy"],
-                    {"TZ": self.sm.main.timezone})
+        self.dc.create(self.docker_name,
+                       f"{DOCKER_IMAGE_PREFIX}waterfall:{self.instance.version}",
+                       self.instance.host, {"25565/tcp": 25565},
+                       [f"{self.dc.root_path}/{self.instance.name}:/proxy"],
+                       {"TZ": self.sm.main.timezone})
 
+        self.logs = self.dc.get_logs(self.docker_name).decode("utf-8")
 
     def run(self) -> None:
-
-        self.logs = self.dc.get_logs("minetower-proxy", False).decode("utf-8")
 
         while self.sm.main.running:
 
@@ -31,24 +32,32 @@ class WaterfallServer(Server):
             self.request_start = False
 
             self.logger.info(f"Start server {self.instance.name}")
-            self.dc.start("minetower-proxy")
+            self.dc.start(self.docker_name)
 
-            self.logs = ""
-            self.api.logs({})
+            for line in self.dc.get_logs(self.docker_name, True, True):
 
-            for line in self.dc.get_logs("minetower-proxy", True):
                 self.logs += line.decode("utf-8")
                 if self.api.client.connected:
                     self.api.log_update(self.instance.name, line.decode("utf-8"))
 
             if self.instance.mode == "manual":
+
                 session = self.sql.Session()
                 session.add(self.instance)
                 self.instance.mode = "off"
                 session.commit()
                 self.sql.Session.remove()
 
+                if self.api.client.connected:
+                    self.api.servers({})
+
+            if self.instance.mode in ("failure", "always"):
+
+                self.request_start = True
+
+            time.sleep(5)
+
     def stop(self):
 
         self.logger.info(f"Stop server {self.instance.name}")
-        self.dc.stop("minetower-proxy")
+        self.dc.stop(self.docker_name)

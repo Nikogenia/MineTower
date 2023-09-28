@@ -23,7 +23,8 @@ class SQL:
         self.engine = create_engine(
             f"mysql+mysqldb://{self.config['user']}:{self.config['password']}" +
             f"@{self.config['host']}:{self.config['port']}" +
-            f"/{self.config['database']}?charset=utf8mb4")
+            f"/{self.config['database']}?charset=utf8mb4",
+            pool_recycle=3600)
 
         if self.main.debug:
             self.engine.echo = True
@@ -36,7 +37,8 @@ class SQL:
     def config(self):
         return self.main.config["sql"]
 
-    def define_general_entry(self, session, name, value):
+    @staticmethod
+    def define_general_entry(session, name, value):
 
         if not session.query(General).filter_by(name=name).first():
             session.add(General(name=name, value=value))

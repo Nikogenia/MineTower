@@ -35,6 +35,12 @@ class ServerManager:
     def sql(self):
         return self.main.sql
 
+    def get_server(self, name):
+
+        for server in self.servers:
+            if server.instance.name == name:
+                return server
+
     def run(self):
 
         self.main.logger.info("Create servers")
@@ -49,27 +55,23 @@ class ServerManager:
 
     def change_mode(self, server, mode):
 
+        s = self.get_server(server)
+        if not s or s.instance.mode == mode:
+            return
+
         session = self.sql.Session()
-
-        for s in self.servers:
-
-            session.add(s.instance)
-
-            if s.instance.name == server:
-
-                s.instance.mode = mode
-
-                session.commit()
-
-                if mode == "off" and s.running():
-                    s.stop()
-
-                elif mode != "off" and not s.running():
-                    s.request_start = True
-
-                self.main.api.servers({})
-
+        session.add(s.instance)
+        s.instance.mode = mode
+        session.commit()
         self.sql.Session.remove()
+
+        if mode == "off" and s.running():
+            s.stop()
+
+        elif mode != "off" and not s.running():
+            s.request_start = True
+
+        self.main.api.servers({})
 
     def quit(self):
 

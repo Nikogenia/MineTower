@@ -1,4 +1,7 @@
 import docker
+import time
+
+from constant import DOCKER_IMAGE_PREFIX
 
 
 class Docker:
@@ -35,6 +38,10 @@ class Docker:
     def network(self):
         return self.main.sql.get_general_entry("docker_network")
 
+    @property
+    def root_path(self):
+        return self.main.sql.get_general_entry("docker_root_path")
+
     def get_containers(self):
 
         containers = []
@@ -51,7 +58,7 @@ class Docker:
 
         for image in self.client.images.list():
             for tag in image.tags:
-                if tag.startswith("nikogenia/mt-"):
+                if tag.startswith(DOCKER_IMAGE_PREFIX):
                     images.append(image)
                     continue
 
@@ -63,11 +70,13 @@ class Docker:
             if network.name == self.network:
                 return network
 
-    def get_logs(self, name, stream):
+    def get_logs(self, name, stream=False, since_now=False):
 
         for container in self.get_containers():
             if container.name == name:
-                return container.logs(stream=stream)
+                if since_now:
+                    return container.logs(stream=stream, since=time.time() - 5, tail=5000)
+                return container.logs(stream=stream, tail=5000)
 
     def pull_image(self, tag):
 

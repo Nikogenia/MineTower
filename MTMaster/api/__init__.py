@@ -12,11 +12,14 @@ class API:
         self.client = Client(logger=self.main.debug,
                              engineio_logger=self.main.debug)
 
-        self.client.on("api_error", self.api_error, namespace=self.namespace)
+        self.client.on("connect", self.on_connect, namespace=self.namespace)
+        self.client.on("disconnect", self.on_disconnect, namespace=self.namespace)
+        self.client.on("api_error", self.on_api_error, namespace=self.namespace)
         self.client.on("servers", self.servers, namespace=self.namespace)
         self.client.on("agents", self.agents, namespace=self.namespace)
         self.client.on("logs", self.logs, namespace=self.namespace)
         self.client.on("change_mode", self.change_mode, namespace=self.namespace)
+        self.client.on("command", self.command, namespace=self.namespace)
 
     @property
     def config(self):
@@ -54,13 +57,25 @@ class API:
 
         self.client.disconnect()
 
-    def api_error(self, data):
+    def on_api_error(self, data):
 
         self.main.logger.warning(f"API error: {data['error']}")
 
         if data["error"] in ["missing_auth", "invalid_key", "missing_id"]:
             self.main.logger.error("API authentication failed! Quit")
             self.main.quit()
+
+    def on_connect(self):
+
+        self.main.logger.info("API connected")
+
+        self.agents({})
+        self.servers({})
+        self.logs({})
+
+    def on_disconnect(self):
+
+        self.main.logger.info("API disconnected")
 
     def servers(self, data):
 
@@ -113,3 +128,19 @@ class API:
             "server": server,
             "data": data
         }, namespace=self.namespace)
+
+    def command(self, data):
+
+        if data["command"] in ("stop", "end"):
+
+            server = self.main.sm.get_server(data["server"])
+            if server and server.instance.mode == "failure":
+                session = self.main.sql.Session()
+                session.add(server.instance)
+                server.instance.mode = "manual"
+                session.commit()
+                self.main.sql.Session.remove()
+
+                self.servers({})
+
+        self.client.emit("command", data, namespace=self.namespace)

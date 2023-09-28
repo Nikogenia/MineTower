@@ -21,9 +21,10 @@ class Instance(Base):
     created = Column(TIMESTAMP, server_default=func.current_timestamp())
     mode = Column(VARCHAR(32), server_default="off")
     memory = Column(VARCHAR(16), server_default="2048M")
+    version = Column(VARCHAR(16), server_default="latest")
 
     def __repr__(self):
         return (f"Instance({self.id} | name={self.name} | host={self.host}" +
                 f" | address={self.address} | agent={self.agent} | type={self.type}" +
                 f" | cluster={self.cluster} | enabled={self.enabled} | created={self.created}" +
-                f" | mode={self.mode} | memory={self.memory})")
+                f" | mode={self.mode} | memory={self.memory} | version={self.version})")

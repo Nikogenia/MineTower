@@ -32,6 +32,10 @@ class Server(ABC, th.Thread):
     def logger(self):
         return self.sm.main.logger
 
+    @property
+    def docker_name(self):
+        return self.sql.get_general_entry("docker_prefix") + self.instance.name
+
     @abstractmethod
     def running(self):
         pass

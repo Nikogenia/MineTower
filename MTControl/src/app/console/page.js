@@ -4,7 +4,7 @@ import { MainContext } from "@/components/MainContext"
 import { getUser } from "@/utils/api"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import Loading from "@/components/Loading"
-import { changeMode, manageSocket } from "@/utils/socket"
+import { changeMode, command, manageSocket, tabComplete } from "@/utils/socket"
 import { MdChevronRight, MdExpandMore, MdSend } from "react-icons/md"
 
 export default function Console() {
@@ -45,6 +45,13 @@ export default function Console() {
   const [agents, setAgents] = useState([])
   const [logs, setLogs] = useState({})
   const [socket, setSocket] = useState(null)
+  const [options, setOptions] = useState({
+    index: 0,
+    options: [],
+    input: "",
+    raw_input: "",
+    update: false
+  })
 
   useEffect(() => {
     setTitle("Console")
@@ -52,7 +59,7 @@ export default function Console() {
   }, [])
 
   useEffect(() => {
-    manageSocket(socket, setSocket, setAgents, setServers, setLogs)
+    manageSocket(socket, setSocket, setAgents, setServers, setLogs, setOptions)
     return () => {
       if (socket != null) socket.close()
     }
@@ -68,7 +75,7 @@ export default function Console() {
     <div className="h-full flex flex-col md:flex-row items-center overflow-y-auto md:overflow-x-visible gap-6 p-6">
       <Servers agents={agents} servers={servers} showAgents={showAgents} setShowAgents={setShowAgents}
       selected={selected} setSelected={setSelected} />
-      <Control servers={servers} selected={selected} logs={logs} socket={socket} />
+      <Control servers={servers} selected={selected} logs={logs} options={options} socket={socket} setOptions={setOptions} />
     </div>
   )
 
@@ -134,7 +141,7 @@ function Server({server, selected, setSelected}) {
 
 }
 
-function Control({servers, selected, logs, socket}) {
+function Control({servers, selected, logs, options, socket, setOptions}) {
 
   const output = useRef()
 
@@ -150,6 +157,29 @@ function Control({servers, selected, logs, socket}) {
 
   const submit = (e) => {
     e.preventDefault()
+    command(socket, server.name, input)
+    setInput("")
+  }
+
+  const nextOption = () => {
+    if (!options.options.length) return
+    setInput(prev => {
+      return prev.substring(0, prev.lastIndexOf(" ") + 1) + options.options[options.index]
+    })
+    setOptions(prev => {
+      if (prev.index + 1 == prev.options.length) return {...prev, index: 0}
+      return {...prev, index: prev.index + 1}
+    })
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key != "Tab") return
+    e.preventDefault()
+    if (options.input != options.raw_input | (options.input == "" & !options.options.length)) {
+      tabComplete(socket, server.name, input)
+      return
+    }
+    nextOption()
   }
 
   useEffect(() => {
@@ -157,6 +187,14 @@ function Control({servers, selected, logs, socket}) {
     if (selected in logs) output.current.value = logs[selected]
     if (autoScroll) output.current.scrollTop = output.current.scrollHeight
   }, [logs, selected])
+
+  useEffect(() => {
+    if (!options.update) return
+    setOptions(prev => {
+      return {...prev, update: false}
+    })
+    nextOption()
+  }, [options])
 
   if (selected == "") return (
     <div className="bg-bg-primary p-4 w-full h-full rounded-lg flex flex-col justify-center">
@@ -204,7 +242,10 @@ function Control({servers, selected, logs, socket}) {
               hover:brightness-110 w-full placeholder-bg-neutral border-fg-secondary"
               type="text" value={input} autoFocus
               placeholder="help"
-              onChange={(e) => setInput(e.target.value)}></input>
+              onChange={(e) => setInput(e.target.value)}
+              onInput={(e) => setOptions(prev => {return {...prev, raw_input: e.target.value}})}
+              onKeyDown={handleKeyPress}
+              autoComplete="off" ></input>
             <button className="bg-accent rounded-md px-1 h-full
               text-bg-neutral text-2xl hover:brightness-110 border border-bg-neutral"
               ><MdSend /></button>

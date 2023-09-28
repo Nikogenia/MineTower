@@ -49,7 +49,7 @@ export default function User() {
           <div className="text-xl w-32 text-center sm:text-right">Password</div>
           <input type="password" value={inputPassword} onChange={(e) => setInputPassword(e.target.value)} placeholder="1234" autoFocus
           className="bg-bg-secondary p-1 rounded-lg border-fg-secondary hover:brightness-110
-          form-input w-full placeholder-bg-neutral" />
+          form-input w-full placeholder-bg-neutral" autoComplete="new-password" />
         </div>
         <button className="bg-accent text-bg-neutral text-xl py-2 px-8 rounded-lg focus:outline-1
         focus:outline-fg-primary hover:scale-105">Change Password</button>

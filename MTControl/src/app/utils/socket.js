@@ -47,9 +47,19 @@ function onLogUpdate(data, setLogs) {
 
 }
 
+function onTabComplete(data, setOptions) {
+
+    console.debug("Got tab complete")
+    setOptions(prev => {
+        return {...prev, options: data.options, input: data.input, index: 0, update: true}
+    })
+
+}
+
 export async function changeMode(socket, server, mode) {
 
     console.debug("Change mode")
+    toast.info("Changing mode! Please wait!")
     socket.emit("change_mode", {
         server: server,
         mode: mode
@@ -57,7 +67,27 @@ export async function changeMode(socket, server, mode) {
 
 }
 
-export async function manageSocket(socket, setSocket, setAgents, setServers, setLogs) {
+export async function command(socket, server, command) {
+
+    console.debug("Command")
+    socket.emit("command", {
+        server: server,
+        command: command
+    })
+
+}
+
+export async function tabComplete(socket, server, input) {
+
+    console.debug("Tab complete")
+    socket.emit("tab_complete", {
+        server: server,
+        input: input
+    })
+
+}
+
+export async function manageSocket(socket, setSocket, setAgents, setServers, setLogs, setOptions) {
     
     if (socket == null) {
         console.info("Connect to socket")
@@ -66,6 +96,8 @@ export async function manageSocket(socket, setSocket, setAgents, setServers, set
         }))
         return
     }
+
+    socket.removeAllListeners()
 
     socket.on("connect", () => onConnect(socket))
 
@@ -78,6 +110,8 @@ export async function manageSocket(socket, setSocket, setAgents, setServers, set
     socket.on("agents", (data) => onAgents(data, setAgents))
 
     socket.on("log_update", (data) => onLogUpdate(data, setLogs))
+
+    socket.on("tab_complete", (data) => onTabComplete(data, setOptions))
 
     socket.on("control_error", (data) => {
         console.error("Socket error: " + data.error)

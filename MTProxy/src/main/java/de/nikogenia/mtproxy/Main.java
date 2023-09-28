@@ -25,8 +25,10 @@ public final class Main extends Plugin {
         config = (Config) FileConfig.load("./minetower.yml", Config.class);
         config.save("./minetower.yml");
 
+        getLogger().info("Setup SQL");
         sql = new SQL();
 
+        getLogger().info("Setup API");
         api = new API();
 
     }
@@ -34,9 +36,13 @@ public final class Main extends Plugin {
     @Override
     public void onDisable() {
 
+        getLogger().info("Quit API");
         api.exit();
 
+        getLogger().info("Quit SQL");
         sql.exit();
+
+        getLogger().info("Exit");
 
     }
 

@@ -7,10 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class API {
 
@@ -38,6 +35,10 @@ public class API {
 
         socket.on("tab_complete", this::tabComplete);
 
+        socket.on("servers", this::servers);
+
+        socket.on("motd_update", this::motdUpdate);
+
         socket.connect();
 
     }
@@ -45,6 +46,8 @@ public class API {
     private void connect(Object... args) {
 
         Main.getInstance().getLogger().info("API connected");
+
+        socket.emit("servers", new JSONObject(Collections.singletonMap("request", true)));
 
     }
 
@@ -97,6 +100,18 @@ public class API {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private void servers(Object... args) {
+
+        Main.getServerManager().updateServers((JSONObject) args[0]);
+
+    }
+
+    private void motdUpdate(Object... args) {
+
+        Main.getInstance().updateMotd();
 
     }
 

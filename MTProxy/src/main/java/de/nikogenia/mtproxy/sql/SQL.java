@@ -28,6 +28,7 @@ public class SQL {
 
         SessionFactory sessionFactory = new Configuration()
                 .addAnnotatedClass(General.class)
+                .addAnnotatedClass(Motd.class)
                 .addProperties(prop)
                 .buildSessionFactory();
         session = sessionFactory.openSession();
@@ -45,6 +46,18 @@ public class SQL {
         if (result.isEmpty()) return "";
 
         return result.get(0).getValue();
+
+    }
+
+    public String getMotd() {
+
+        List<Motd> result = session.createQuery(
+                "FROM Motd Where name = (SELECT value FROM General WHERE name = 'motd')", Motd.class)
+                .list();
+
+        if (result.isEmpty()) return "INTERNAL SERVER ERROR - Database";
+
+        return result.get(0).getLine1() + "\n" + result.get(0).getLine2();
 
     }
 

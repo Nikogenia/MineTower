@@ -71,7 +71,12 @@ class API(Namespace):
 
     def on_servers(self, data):
 
+        if "request" in data:
+            emit("servers", data, namespace=self.name, to=master)
+            return
+
         emit("servers", data, broadcast=True, namespace=Control.name)
+        emit("servers", data, broadcast=True, namespace=self.name, include_self=False)
 
     def on_agents(self, data):
 

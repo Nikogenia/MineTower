@@ -51,7 +51,7 @@ function onTabComplete(data, setOptions) {
 
     console.debug("Got tab complete")
     setOptions(prev => {
-        return {...prev, options: data.options, input: data.input, index: 0, update: true}
+        return {...prev, options: data.options, input: data.input, index: -1, update: true}
     })
 
 }

@@ -46,7 +46,7 @@ export default function Console() {
   const [logs, setLogs] = useState({})
   const [socket, setSocket] = useState(null)
   const [options, setOptions] = useState({
-    index: 0,
+    index: -1,
     options: [],
     input: "",
     raw_input: "",
@@ -159,16 +159,31 @@ function Control({servers, selected, logs, options, socket, setOptions}) {
     e.preventDefault()
     command(socket, server.name, input)
     setInput("")
+    setOptions({
+      index: -1,
+      options: [],
+      input: "",
+      raw_input: "",
+      update: false
+    })
   }
 
-  const nextOption = () => {
+  const nextOption = (back) => {
     if (!options.options.length) return
+    let index = options.index
+    if (back) {
+      if (index - 1 < 0) index = options.options.length - 1
+      else index -= 1
+    }
+    else {
+      if (index + 1 >= options.options.length) index = 0
+      else index += 1
+    }
     setInput(prev => {
-      return prev.substring(0, prev.lastIndexOf(" ") + 1) + options.options[options.index]
+      return prev.substring(0, prev.lastIndexOf(" ") + 1) + options.options[index]
     })
     setOptions(prev => {
-      if (prev.index + 1 == prev.options.length) return {...prev, index: 0}
-      return {...prev, index: prev.index + 1}
+      return {...prev, index: index}
     })
   }
 
@@ -179,7 +194,7 @@ function Control({servers, selected, logs, options, socket, setOptions}) {
       tabComplete(socket, server.name, input)
       return
     }
-    nextOption()
+    nextOption(e.shiftKey)
   }
 
   useEffect(() => {
@@ -193,7 +208,7 @@ function Control({servers, selected, logs, options, socket, setOptions}) {
     setOptions(prev => {
       return {...prev, update: false}
     })
-    nextOption()
+    nextOption(false)
   }, [options])
 
   if (selected == "") return (

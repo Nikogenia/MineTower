@@ -88,6 +88,7 @@ class API:
                 "address": server.instance.address,
                 "agent": server.agent.name,
                 "cluster": server.instance.cluster,
+                "type": server.instance.type,
                 "mode": server.instance.mode,
                 "enabled": server.instance.enabled,
                 "created": int(server.instance.created.timestamp()),

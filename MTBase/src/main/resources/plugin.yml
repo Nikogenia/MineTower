@@ -1,0 +1,6 @@
+name: MTBase
+version: '${project.version}'
+main: de.nikogenia.mtbase.Main
+api-version: '1.20'
+authors: [Nikogenia]
+description: The base Paper plugin for any server of the server network management engine MineTower

@@ -2,7 +2,7 @@ package de.nikogenia.mtproxy.config;
 
 public class SQLConfig {
 
-    private String host = "localhost";
+    private String host = "172.22.0.2";
     private Integer port = 3306;
     private String user = "root";
     private String password = "";

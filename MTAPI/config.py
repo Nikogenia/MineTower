@@ -18,17 +18,17 @@ TEMPLATE = """# -------------
 SECRET_KEY=#KEY#
 
 # CORS origins
-CORS_ORIGINS="http://localhost:3000,http://172.19.0.42:8080"
+CORS_ORIGINS="http://localhost:3000,http://172.22.1.2:8080"
 
 # MySQL server
-MYSQL_HOST=localhost
+MYSQL_HOST=172.22.0.2
 MYSQL_PORT=3306
 MYSQL_USER=root
 MYSQL_PASSWORD=
 MYSQL_DATABASE=
     
 # Redis server
-REDIS_HOST=localhost
+REDIS_HOST=172.22.0.3
 REDIS_PORT=6379
 """
 

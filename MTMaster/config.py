@@ -11,7 +11,7 @@ TEMPLATE = """# ----------------
 
 # MySQL server
 sql:
-  host: localhost
+  host: 172.22.0.2
   port: 3306
   user: root
   password:
@@ -19,7 +19,7 @@ sql:
     
 # API
 api:
-  url: "http://localhost:8080"
+  url: "http://172.22.1.2:8080"
 """
 
 

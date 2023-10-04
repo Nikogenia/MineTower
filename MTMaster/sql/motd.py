@@ -14,7 +14,3 @@ class Motd(Base):
     line1 = Column(VARCHAR(255))
     line2 = Column(VARCHAR(255))
     created = Column(TIMESTAMP, server_default=func.current_timestamp())
-
-    def __repr__(self):
-        return (f"Motd({self.id} | name={self.name}" +
-                f" | line1={self.line1} | line2={self.line2} | created={self.created})")

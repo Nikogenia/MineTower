@@ -12,6 +12,3 @@ class Agent(Base):
     id = Column(INTEGER(unsigned=True), primary_key=True)
     name = Column(VARCHAR(32), unique=True)
     created = Column(TIMESTAMP, server_default=func.current_timestamp())
-
-    def __repr__(self):
-        return f"Agent({self.id} | name={self.name} | created={self.created})"

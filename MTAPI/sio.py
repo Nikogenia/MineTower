@@ -55,8 +55,6 @@ class API(Namespace):
         if auth["id"] == "master":
             master = request.sid
 
-        session["id"] = auth["id"]
-
         print(f"New API socket connection from {auth['id']}")
 
     def on_disconnect(self):
@@ -70,10 +68,6 @@ class API(Namespace):
             print("A API socket connection lost")
 
     def on_servers(self, data):
-
-        if "request" in data:
-            emit("servers", data, namespace=self.name, to=master)
-            return
 
         emit("servers", data, broadcast=True, namespace=Control.name)
         emit("servers", data, broadcast=True, namespace=self.name, include_self=False)

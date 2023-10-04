@@ -27,10 +27,6 @@ class User(db.Model):
     created = Column(TIMESTAMP, server_default=db.func.current_timestamp())
     last_login = Column(TIMESTAMP, default=None)
 
-    def __repr__(self):
-        return (f"User({self.id} | name={self.name} | password={self.password}" +
-                f" | admin={self.admin} | created={self.created} | last_login={self.last_login})")
-
 
 class General(db.Model):
 
@@ -39,6 +35,3 @@ class General(db.Model):
     id = Column(INTEGER(unsigned=True), primary_key=True)
     name = Column(VARCHAR(32), unique=True)
     value = Column(TEXT)
-
-    def __repr__(self):
-        return f"General({self.id} | name={self.name} | value={self.value})"

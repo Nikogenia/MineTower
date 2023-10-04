@@ -1,6 +1,6 @@
 package de.nikogenia.mtbase.api;
 
-import de.nikogenia.mtbase.Main;
+import de.nikogenia.mtbase.MTBase;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import org.bukkit.Bukkit;
@@ -20,14 +20,14 @@ public class API {
     public API() {
 
         Map<String, String> auth = new HashMap<>();
-        auth.put("key", Main.getSql().getGeneralEntry("api_key"));
-        auth.put("id", Main.getConfiguration().getName());
+        auth.put("key", MTBase.getSql().getGeneralEntry("api_key"));
+        auth.put("id", MTBase.getConfiguration().getName());
 
         IO.Options options = IO.Options.builder()
                 .setAuth(auth)
                 .build();
 
-        socket = IO.socket(URI.create(Main.getConfiguration().getApi().getUrl() + "/api"), options);
+        socket = IO.socket(URI.create(MTBase.getConfiguration().getApi().getUrl() + "/api"), options);
 
         socket.on("connect", this::connect);
 
@@ -45,21 +45,19 @@ public class API {
 
     private void connect(Object... args) {
 
-        Main.getInstance().getLogger().info("API connected");
-
-        socket.emit("servers", new JSONObject(Collections.singletonMap("request", true)));
+        MTBase.getInstance().getLogger().info("API connected");
 
     }
 
     private void disconnect(Object... args) {
 
-        Main.getInstance().getLogger().info("API disconnected");
+        MTBase.getInstance().getLogger().info("API disconnected");
 
     }
 
     private void apiError(Object... args) {
 
-        Main.getInstance().getLogger().info("API error: " + args[0]);
+        MTBase.getInstance().getLogger().info("API error: " + args[0]);
 
     }
 
@@ -69,11 +67,11 @@ public class API {
 
             JSONObject data = (JSONObject) args[0];
 
-            if (!data.getString("server").equals(Main.getConfiguration().getName())) return;
+            if (!data.getString("server").equals(MTBase.getConfiguration().getName())) return;
 
-            Main.getInstance().getLogger().info("(" + data.getString("user") + ") > " + data.getString("command"));
+            MTBase.getInstance().getLogger().info("(" + data.getString("user") + ") > " + data.getString("command"));
 
-            Main.getInstance().runCommand(data.getString("command"));
+            MTBase.getInstance().runCommand(data.getString("command"));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -87,7 +85,7 @@ public class API {
 
             JSONObject data = (JSONObject) args[0];
 
-            if (!data.getString("server").equals(Main.getConfiguration().getName())) return;
+            if (!data.getString("server").equals(MTBase.getConfiguration().getName())) return;
 
             List<String> options = Bukkit.getCommandMap().tabComplete(
                     Bukkit.getConsoleSender(), data.getString("input"));

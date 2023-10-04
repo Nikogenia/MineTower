@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-public final class Main extends JavaPlugin {
+public final class MTBase extends JavaPlugin {
 
-    private static Main instance;
+    private static MTBase instance;
 
     private Config config;
 
@@ -26,7 +26,7 @@ public final class Main extends JavaPlugin {
     private List<String> commands;
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
 
         instance = this;
 
@@ -34,8 +34,15 @@ public final class Main extends JavaPlugin {
         config = (Config) FileConfig.load("./minetower.yml", Config.class);
         config.save("./minetower.yml");
 
-        getLogger().info("Setup SQL");
         sql = new SQL();
+
+    }
+
+    @Override
+    public void onEnable() {
+
+        getLogger().info("Setup SQL");
+        sql.build();
 
         getLogger().info("Setup API");
         api = new API();
@@ -75,7 +82,7 @@ public final class Main extends JavaPlugin {
         commands.add(command);
     }
 
-    public static Main getInstance() {
+    public static MTBase getInstance() {
         return instance;
     }
 

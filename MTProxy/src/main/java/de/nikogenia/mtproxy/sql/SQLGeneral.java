@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "general")
-public class General {
+public class SQLGeneral {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "INT UNSIGNED")
     Integer id;
 

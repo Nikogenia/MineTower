@@ -47,8 +47,6 @@ public class API {
 
         Main.getInstance().getLogger().info("API connected");
 
-        socket.emit("servers", new JSONObject(Collections.singletonMap("request", true)));
-
     }
 
     private void disconnect(Object... args) {
@@ -105,7 +103,7 @@ public class API {
 
     private void servers(Object... args) {
 
-        Main.getServerManager().updateServers((JSONObject) args[0]);
+        Main.getServerManager().updateServers();
 
     }
 

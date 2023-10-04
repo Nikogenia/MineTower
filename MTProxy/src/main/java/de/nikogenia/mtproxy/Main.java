@@ -42,6 +42,7 @@ public final class Main extends Plugin {
         getProxy().getPluginManager().registerListener(this, new ConnectionListeners());
 
         updateMotd();
+        serverManager.updateServers();
 
     }
 

@@ -6,3 +6,7 @@ authors: [Nikogenia]
 description: The Paper plugin for a SMP server of the server network management engine MineTower
 depend:
   - MTBase
+commands:
+  shop:
+    description: "Shop information and administration"
+    usage: "Type '/shop help' for more information!"

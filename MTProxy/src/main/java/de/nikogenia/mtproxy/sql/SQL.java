@@ -5,10 +5,10 @@ import de.nikogenia.mtproxy.config.SQLConfig;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 
 public class SQL {
 
@@ -45,7 +45,7 @@ public class SQL {
 
     public String getGeneralEntry(String name) {
 
-        List<SQLGeneral> result = session.createQuery("FROM SQLGeneral WHERE name = :name", SQLGeneral.class)
+        List<SQLGeneral> result = query("FROM SQLGeneral WHERE name = :name", SQLGeneral.class)
                 .setParameter("name", name)
                 .list();
 
@@ -57,7 +57,7 @@ public class SQL {
 
     public String getMotd() {
 
-        List<SQLMotd> result = session.createQuery(
+        List<SQLMotd> result = query(
                 "FROM SQLMotd WHERE name = (SELECT value FROM SQLGeneral WHERE name = 'motd')", SQLMotd.class)
                 .list();
 
@@ -69,13 +69,13 @@ public class SQL {
 
     public List<SQLInstance> getInstances() {
 
-        return session.createQuery("FROM SQLInstance", SQLInstance.class).list();
+        return query("FROM SQLInstance", SQLInstance.class).list();
 
     }
 
     public SQLInstance getInstance(String name) {
 
-        List<SQLInstance> result = session.createQuery("FROM SQLInstance WHERE name = :name", SQLInstance.class)
+        List<SQLInstance> result = query("FROM SQLInstance WHERE name = :name", SQLInstance.class)
                 .setParameter("name", name)
                 .list();
 
@@ -85,9 +85,9 @@ public class SQL {
 
     }
 
-    public SQLPlayer getPlayer(String uuid) {
+    public SQLPlayer getPlayerByUUID(String uuid) {
 
-        List<SQLPlayer> result = session.createQuery("FROM SQLPlayer WHERE uuid = :uuid", SQLPlayer.class)
+        List<SQLPlayer> result = query("FROM SQLPlayer WHERE uuid = :uuid", SQLPlayer.class)
                 .setParameter("uuid", uuid)
                 .list();
 
@@ -95,6 +95,22 @@ public class SQL {
 
         return result.get(0);
 
+    }
+
+    public SQLPlayer getPlayerByName(String name) {
+
+        List<SQLPlayer> result = query("FROM SQLPlayer WHERE name = :name", SQLPlayer.class)
+                .setParameter("name", name)
+                .list();
+
+        if (result.isEmpty()) return null;
+
+        return result.get(0);
+
+    }
+
+    public <T> Query<T> query(String query, Class<T> target) {
+        return session.createQuery(query, target);
     }
 
     public void exit() {

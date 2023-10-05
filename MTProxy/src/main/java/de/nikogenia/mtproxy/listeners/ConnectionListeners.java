@@ -1,7 +1,6 @@
 package de.nikogenia.mtproxy.listeners;
 
 import de.nikogenia.mtproxy.Main;
-import de.nikogenia.mtproxy.sql.SQL;
 import de.nikogenia.mtproxy.sql.SQLPlayer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -13,7 +12,6 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.TimeZone;
 
 public class ConnectionListeners implements Listener {
 
@@ -22,7 +20,7 @@ public class ConnectionListeners implements Listener {
 
         Main.getInstance().getLogger().info(event.getPlayer().getName() + " joined the network!");
 
-        SQLPlayer player = Main.getSql().getPlayer(event.getPlayer().getUniqueId().toString());
+        SQLPlayer player = Main.getSql().getPlayerByUUID(event.getPlayer().getUniqueId().toString());
         if (player == null) {
             player = new SQLPlayer();
             player.setUuid(event.getPlayer().getUniqueId().toString());
@@ -48,7 +46,7 @@ public class ConnectionListeners implements Listener {
 
         Main.getInstance().getLogger().info(event.getPlayer().getName() + " left the network!");
 
-        SQLPlayer player = Main.getSql().getPlayer(event.getPlayer().getUniqueId().toString());
+        SQLPlayer player = Main.getSql().getPlayerByUUID(event.getPlayer().getUniqueId().toString());
         if (player != null) {
             player.setOnline(false);
             player.setLastDisconnect(Timestamp.from(Instant.now()));

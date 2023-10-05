@@ -5,6 +5,7 @@ import de.nikogenia.mtbase.config.SQLConfig;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Properties;
@@ -58,7 +59,7 @@ public class SQL {
 
     public String getGeneralEntry(String name) {
 
-        List<SQLGeneral> result = session.createQuery("FROM SQLGeneral WHERE name = :name", SQLGeneral.class)
+        List<SQLGeneral> result = query("FROM SQLGeneral WHERE name = :name", SQLGeneral.class)
                 .setParameter("name", name)
                 .list();
 
@@ -66,6 +67,40 @@ public class SQL {
 
         return result.get(0).getValue();
 
+    }
+
+    public List<SQLPlayer> getPlayers() {
+
+        return query("FROM SQLPlayer", SQLPlayer.class).list();
+
+    }
+
+    public SQLPlayer getPlayerByUUID(String uuid) {
+
+        List<SQLPlayer> result = query("FROM SQLPlayer WHERE uuid = :uuid", SQLPlayer.class)
+                .setParameter("uuid", uuid)
+                .list();
+
+        if (result.isEmpty()) return null;
+
+        return result.get(0);
+
+    }
+
+    public SQLPlayer getPlayerByName(String name) {
+
+        List<SQLPlayer> result = query("FROM SQLPlayer WHERE name = :name", SQLPlayer.class)
+                .setParameter("name", name)
+                .list();
+
+        if (result.isEmpty()) return null;
+
+        return result.get(0);
+
+    }
+
+    public <T> Query<T> query(String query, Class<T> target) {
+        return session.createQuery(query, target);
     }
 
     public void exit() {

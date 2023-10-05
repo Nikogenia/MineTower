@@ -86,7 +86,7 @@ export async function login(router, username, password) {
     console.info("Log in as '" + username + "'")
   
     const data = await request("/user/login", {
-        username: username,
+        username: username.toLowerCase(),
         password: password
     }, true)
     if (data == null) return
@@ -191,7 +191,7 @@ export async function registerUser(username, password, admin) {
     console.info("Register user '" + username + "'")
 
     const data = await request("/user/register", {
-    username: username,
+    username: username.toLowerCase(),
     password: password,
     admin: admin
     }, true)

@@ -66,6 +66,7 @@ class ServerManager:
         self.sql.Session.remove()
 
         if mode == "off" and s.running():
+            s.request_start = False
             s.stop()
 
         elif mode != "off" and not s.running():

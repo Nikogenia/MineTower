@@ -1,2 +1,77 @@
 ---
 
+# === MineTower docker-compose.yml ===
+
+# You can replace every 'minetower' with your desired name!
+
+# The network need to be created externally!
+# The subnet 172.22.0.0/16 with the gateway 172.22.0.1 is highly recommended.
+
+# A SQL database password is needed too!
+
+services:
+
+  minetower-mysql:
+    container_name: minetower-mysql
+    image: mysql:latest
+    ports:
+      - 3342:3306
+    volumes:
+      - /root/minetower/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=samplepassword  # REPLACE WITH YOUR PASSWORD !!!
+    restart: unless-stopped
+    networks:
+      minetower:
+        ipv4_address: 172.22.0.2
+
+  minetower-redis:
+    container_name: minetower-redis
+    image: redis:latest
+    ports:
+      - 6342:6379
+    volumes:
+      - /root/minetower/redis:/data
+    restart: unless-stopped
+    networks:
+      minetower:
+        ipv4_address: 172.22.0.3
+
+  minetower-api:
+    container_name: minetower-api
+    image: nikogenia/mt-api:latest
+    ports:
+      - 8042:8080
+    volumes:
+      - /root/minetower/api:/api
+    restart: unless-stopped
+    networks:
+      minetower:
+        ipv4_address: 172.22.1.2
+
+  minetower-master:
+    container_name: minetower-master
+    image: nikogenia/mt-master:latest
+    volumes:
+      - /root/minetower:/minetower
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      minetower:
+        ipv4_address: 172.22.1.3
+
+  minetower-control:
+    container_name: minetower-control
+    image: nikogenia/mt-control:latest
+    volumes:
+      - /root/minetower/control:/control
+    ports:
+      - 3042:3000
+    restart: unless-stopped
+    networks:
+      minetower:
+        ipv4_address: 172.22.1.4
+
+networks:
+  minetower:
+    external: true

@@ -122,7 +122,7 @@ function Users({users, setUsers, username}) {
                   </div>
                   {(user.name == "admin" | user.name == username) ? <></> : (
                       <button className="bg-red-500 rounded mr-3 px-2 py-1 text-xl hover:scale-105"
-                      onClick={() => unregister(backend, user.name)}><MdDelete /></button>
+                      onClick={() => unregister(user.name)}><MdDelete /></button>
                   )}
               </div>
             </div>

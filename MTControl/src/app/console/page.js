@@ -143,8 +143,6 @@ function Server({server, selected, setSelected}) {
 
 function Control({servers, selected, logs, options, socket, setOptions}) {
 
-  const {backend} = useContext(MainContext)
-
   const output = useRef()
 
   const [autoScroll, setAutoScroll] = useState(true)
@@ -159,7 +157,7 @@ function Control({servers, selected, logs, options, socket, setOptions}) {
 
   const submit = (e) => {
     e.preventDefault()
-    command(backend, socket, server.name, input)
+    command(socket, server.name, input)
     setInput("")
     setOptions({
       index: -1,
@@ -193,7 +191,7 @@ function Control({servers, selected, logs, options, socket, setOptions}) {
     if (e.key != "Tab") return
     e.preventDefault()
     if (options.input != options.raw_input | (options.input == "" & !options.options.length)) {
-      tabComplete(backend, socket, server.name, input)
+      tabComplete(socket, server.name, input)
       return
     }
     nextOption(e.shiftKey)
@@ -237,7 +235,7 @@ function Control({servers, selected, logs, options, socket, setOptions}) {
         <div className="flex w-full gap-1 mt-2">
           <div className="bg-red-700 text-red-200 text-xl font-mono font-bold w-full
             rounded-md border-red-600 border-2 text-center px-3 pt-0.5">OFFLINE</div>
-          <select value={server.mode} onChange={(e) => changeMode(backend, socket, server.name, e.target.value)} className="text-xl rounded-md bg-accent text-bg-neutral
+          <select value={server.mode} onChange={(e) => changeMode(socket, server.name, e.target.value)} className="text-xl rounded-md bg-accent text-bg-neutral
             px-3 py-0.5 border border-bg-neutral hover:brightness-110 font-semibold">
             {[
               ['off', 'Off'],
@@ -270,7 +268,7 @@ function Control({servers, selected, logs, options, socket, setOptions}) {
           <div className="flex gap-1">
             <div className="bg-lime-700 text-lime-200 text-xl font-mono font-bold w-full xl:w-auto
               rounded-md border-lime-600 border-2 text-center px-3 pt-0.5">ONLINE</div>
-            <select value={server.mode} onChange={(e) => changeMode(backend, socket, server.name, e.target.value)} className="text-xl rounded-md bg-accent text-bg-neutral
+            <select value={server.mode} onChange={(e) => changeMode(socket, server.name, e.target.value)} className="text-xl rounded-md bg-accent text-bg-neutral
               px-3 py-0.5 border border-bg-neutral hover:brightness-110 font-semibold">
               {[
                 ['off', 'Off'],

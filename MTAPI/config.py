@@ -58,7 +58,7 @@ class Config:
 
     DEBUG = "DEBUG" in os.environ
 
-    SECRET_KEY = os.environ["SECRET_KEY"]
+    SECRET_KEY = os.environ["SECRET_KEY"].encode("utf-8")
 
     CORS_ORIGINS = os.environ["CORS_ORIGINS"].split(",")
 
@@ -72,6 +72,5 @@ class Config:
 
     SESSION_TYPE = "redis"
     SESSION_PERMANENT = False
-    SESSION_USE_SIGNER = True
     SESSION_REDIS = redis.from_url(f"redis://{os.environ['REDIS_HOST']}" +
                                    f":{os.environ['REDIS_PORT']}")

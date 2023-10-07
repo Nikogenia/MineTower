@@ -23,9 +23,9 @@ class User(db.Model):
     id = Column(VARCHAR(32), primary_key=True, default=lambda: uuid4().hex)
     name = Column(VARCHAR(32), unique=True)
     password = Column(TEXT)
-    admin = Column(BOOLEAN, default=False)
+    admin = Column(BOOLEAN, server_default=db.false())
     created = Column(TIMESTAMP, server_default=db.func.current_timestamp())
-    last_login = Column(TIMESTAMP, default=None)
+    last_login = Column(TIMESTAMP, nullable=True, server_default=db.null())
 
 
 class General(db.Model):

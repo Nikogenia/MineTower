@@ -43,15 +43,17 @@ export default function Header() {
 
 function Title({title}) {
 
+    const {backend} = useContext(MainContext)
+
     return (
         <div className="flex items-center justify-center">
             <Link href="/" className="hover:scale-105">
                 <div className="flex items-center justify-center">
                     <Image src="/android-chrome-192x192.png" width="0" height="0" sizes="100vw" className="w-8 h-8" alt="icon" priority={true} />
                     {(title == "") ? (
-                        <div className="text-2xl font-bold ml-2">{getTitle()}</div>
+                        <div className="text-2xl font-bold ml-2">{getTitle(backend)}</div>
                     ) : (
-                        <div className="text-2xl font-bold ml-2 hidden sm:block">{getTitle()}</div>
+                        <div className="text-2xl font-bold ml-2 hidden sm:block">{getTitle(backend)}</div>
                     )}
                 </div>
             </Link>

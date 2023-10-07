@@ -19,7 +19,7 @@ export default function RootLayout({children}) {
     <html lang="en" className='md:text-lg'>
       <body>
         {// eslint-disable-next-line
-        } <Root children={children} />
+        } <Root children={children} backend={process.env.BACKEND} />
       </body>
     </html>
   )

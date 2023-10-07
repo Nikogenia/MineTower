@@ -7,14 +7,14 @@ import { toast } from "react-toastify"
 
 export default function Login() {
 
-  const {setTitle, user, setUser} = useContext(MainContext)
+  const {setTitle, user, setUser, backend} = useContext(MainContext)
   const router = useRouter()
   const [inputUsername, setInputUsername] = useState("")
   const [inputPassword, setInputPassword] = useState("")
 
   useEffect(() => {
     setTitle("Login")
-    if (user.name == "") checkUser(router, setUser)
+    if (user.name == "") checkUser(backend, router, setUser)
     else router.push("/")
   }, [])
 
@@ -28,7 +28,7 @@ export default function Login() {
       toast.error("Login failed (empty_field): The password field is empty!")
       return
     }
-    login(router, inputUsername, inputPassword)
+    login(backend, router, inputUsername, inputPassword)
   }
 
   return (

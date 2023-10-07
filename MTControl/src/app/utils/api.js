@@ -1,14 +1,12 @@
 import { toast } from "react-toastify"
 
-export const BACKEND = "http://localhost:8080"
-
-export async function request(path, body, showError) {
+export async function request(backend, path, body, showError) {
 
     try {
 
-        console.info("Request to " + BACKEND + path)
+        console.info("Request to " + backend + path)
 
-        const response = await fetch(BACKEND + path, {
+        const response = await fetch(backend + path, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -35,15 +33,15 @@ export async function request(path, body, showError) {
 
 }
 
-export function getTitle() {
+export function getTitle(backend) {
     return "MineTower"
 }
 
-export async function getUser(router, setUser) {
+export async function getUser(backend, router, setUser) {
 
     console.info("Get user")
 
-    const data = await request("/user", {}, true)
+    const data = await request(backend, "/user", {}, true)
     if (data == null) return
 
     if (data.error != "success") {
@@ -62,11 +60,11 @@ export async function getUser(router, setUser) {
 
 }
 
-export async function checkUser(router, setUser) {
+export async function checkUser(backend, router, setUser) {
 
     console.info("Get user")
   
-    const data = await request("/user", {}, false)
+    const data = await request(backend, "/user", {}, false)
     if (data == null) return
     if (data.error != "success") return
   
@@ -81,11 +79,11 @@ export async function checkUser(router, setUser) {
   
   }
   
-export async function login(router, username, password) {
+export async function login(backend, router, username, password) {
   
     console.info("Log in as '" + username + "'")
   
-    const data = await request("/user/login", {
+    const data = await request(backend, "/user/login", {
         username: username.toLowerCase(),
         password: password
     }, true)
@@ -103,7 +101,7 @@ export async function login(router, username, password) {
   
 }
 
-export async function logout(router, setUser) {
+export async function logout(backend, router, setUser) {
 
     console.info("Logout")
   
@@ -112,7 +110,7 @@ export async function logout(router, setUser) {
       admin: false
     })
   
-    const data = await request("/user/logout", {}, true)
+    const data = await request(backend, "/user/logout", {}, true)
     if (data == null) return
   
     if (data.error == "success") {
@@ -128,11 +126,11 @@ export async function logout(router, setUser) {
   
 }
 
-export async function changePassword(username, password) {
+export async function changePassword(backend, username, password) {
 
     console.info("Change password for '" + username + "'")
   
-    const data = await request("/user/password", {
+    const data = await request(backend, "/user/password", {
         password: password
     }, true)
     if (data == null) return
@@ -148,11 +146,11 @@ export async function changePassword(username, password) {
   
 }
 
-export async function getUsers(setUsers) {
+export async function getUsers(backend, setUsers) {
 
     console.info("Get users")
   
-    const data = await request("/user/list", {}, true)
+    const data = await request(backend, "/user/list", {}, true)
     if (data == null) return
   
     if (data.error == "success") {
@@ -166,11 +164,11 @@ export async function getUsers(setUsers) {
   
 }
   
-export async function unregisterUser(username) {
+export async function unregisterUser(backend, username) {
   
     console.info("Unregister user '" + username + "'")
   
-    const data = await request("/user/unregister", {
+    const data = await request(backend, "/user/unregister", {
       username: username
     }, true)
     if (data == null) return
@@ -186,11 +184,11 @@ export async function unregisterUser(username) {
   
 }
   
-export async function registerUser(username, password, admin) {
+export async function registerUser(backend, username, password, admin) {
   
     console.info("Register user '" + username + "'")
 
-    const data = await request("/user/register", {
+    const data = await request(backend, "/user/register", {
     username: username.toLowerCase(),
     password: password,
     admin: admin

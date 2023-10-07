@@ -8,13 +8,13 @@ import Loading from "@/components/Loading"
   
 export default function User() {
 
-  const {setTitle, user, setUser} = useContext(MainContext)
+  const {setTitle, user, setUser, backend} = useContext(MainContext)
   const router = useRouter()
   const [inputPassword, setInputPassword] = useState("")
 
   useEffect(() => {
     setTitle("User")
-    if (user.name == "") getUser(router, setUser, true)
+    if (user.name == "") getUser(backend, router, setUser, true)
   }, [])
 
   const submit = (e) => {
@@ -27,7 +27,7 @@ export default function User() {
       toast.error("Password change failed (too_short): The password need to at least 4 characters long!")
       return
     }
-    changePassword(user.name, inputPassword)
+    changePassword(backend, user.name, inputPassword)
   }
 
   if (user.name == "") {

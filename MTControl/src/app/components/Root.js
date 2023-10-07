@@ -5,7 +5,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { useState } from "react";
 
-export default function Root({children}) {
+export default function Root({children, backend}) {
 
     const [title, setTitle] = useState("")
     const [user, setUser] = useState({
@@ -17,7 +17,8 @@ export default function Root({children}) {
       title: title,
       setTitle: setTitle,
       user: user,
-      setUser: setUser
+      setUser: setUser,
+      backend: backend
     }
 
     return (

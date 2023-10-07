@@ -7,12 +7,12 @@ import Loading from "./components/Loading"
 
 export default function Home() {
 
-  const {setTitle, user, setUser} = useContext(MainContext)
+  const {setTitle, user, setUser, backend} = useContext(MainContext)
   const router = useRouter()
 
   useEffect(() => {
     setTitle("")
-    if (user.name == "") getUser(router, setUser, true)
+    if (user.name == "") getUser(backend, router, setUser, true)
   }, [])
 
   if (user.name == "") {

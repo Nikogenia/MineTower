@@ -10,15 +10,15 @@ import { MdDelete } from "react-icons/md"
   
 export default function AdminUser() {
 
-  const {setTitle, user, setUser} = useContext(MainContext)
+  const {setTitle, user, setUser, backend} = useContext(MainContext)
   const router = useRouter()
 
   const [users, setUsers] = useState([])
 
   useEffect(() => {
     setTitle("Manage Users")
-    if (user.name == "") getUser(router, setUser, true)
-    getUsers(setUsers)
+    if (user.name == "") getUser(backend, router, setUser, true)
+    getUsers(backend, setUsers)
   }, [])
 
   if (user.name == "") {
@@ -44,6 +44,8 @@ export default function AdminUser() {
 
 function Register({setUsers}) {
 
+    const {backend} = useContext(MainContext)
+
     const [inputUsername, setInputUsername] = useState("")
     const [inputPassword, setInputPassword] = useState("")
     const [inputAdmin, setInputAdmin] = useState(false)
@@ -62,8 +64,8 @@ function Register({setUsers}) {
           toast.error("Register failed (too_short): The password need to at least 4 characters long!")
           return
         }
-        await registerUser(inputUsername, inputPassword, inputAdmin)
-        getUsers(setUsers)
+        await registerUser(backend, inputUsername, inputPassword, inputAdmin)
+        getUsers(backend, setUsers)
     }
 
     return (
@@ -97,9 +99,11 @@ function Register({setUsers}) {
 
 function Users({users, setUsers, username}) {
 
+  const {backend} = useContext(MainContext)
+
   const unregister = async (username) => {
-    await unregisterUser(username)
-    getUsers(setUsers)
+    await unregisterUser(backend, username)
+    getUsers(backend, setUsers)
   }
 
   return (
@@ -118,7 +122,7 @@ function Users({users, setUsers, username}) {
                   </div>
                   {(user.name == "admin" | user.name == username) ? <></> : (
                       <button className="bg-red-500 rounded mr-3 px-2 py-1 text-xl hover:scale-105"
-                      onClick={() => unregister(user.name)}><MdDelete /></button>
+                      onClick={() => unregister(backend, user.name)}><MdDelete /></button>
                   )}
               </div>
             </div>

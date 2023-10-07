@@ -7,12 +7,12 @@ import Loading from "@/components/Loading"
 
 export default function Logout() {
 
-  const {setTitle, setUser} = useContext(MainContext)
+  const {setTitle, setUser, backend} = useContext(MainContext)
   const router = useRouter()
 
   useEffect(() => {
     setTitle("Logout")
-    logout(router, setUser)
+    logout(backend, router, setUser)
   }, [])
 
   return (

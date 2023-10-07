@@ -1,5 +1,4 @@
 import { toast } from "react-toastify"
-import { BACKEND } from "./api"
 import { io } from "socket.io-client"
 
 function onConnect(socket) {
@@ -87,11 +86,11 @@ export async function tabComplete(socket, server, input) {
 
 }
 
-export async function manageSocket(socket, setSocket, setAgents, setServers, setLogs, setOptions) {
+export async function manageSocket(backend, socket, setSocket, setAgents, setServers, setLogs, setOptions) {
     
     if (socket == null) {
         console.info("Connect to socket")
-        setSocket(io(BACKEND + "/control", {
+        setSocket(io(backend + "/control", {
             withCredentials: true,
         }))
         return

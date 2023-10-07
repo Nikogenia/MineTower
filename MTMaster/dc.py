@@ -18,18 +18,6 @@ class Docker:
         for image in self.get_images():
             self.main.logger.info(f"Image: {image.tags} | {image.id}")
 
-        # self.create("minetower-test", "nikogenia/mt-paper:latest",
-        #             "172.19.0.20", {},
-        #             [r"C:\Users\Nikocraft\Dev\MineTower\Test\test:/server"])
-
-        # self.start("minetower-test")
-
-        # self.create("minetower-proxy", "nikogenia/mt-waterfall:latest",
-        #             "172.19.0.21", {"25565/tcp": 25565},
-        #             [r"C:\Users\Nikocraft\Dev\MineTower\Test\proxy:/proxy"])
-        #
-        # self.start("minetower-proxy")
-
     @property
     def prefix(self):
         return self.main.sql.get_general_entry("docker_prefix")
@@ -60,7 +48,7 @@ class Docker:
             for tag in image.tags:
                 if tag.startswith(DOCKER_IMAGE_PREFIX):
                     images.append(image)
-                    continue
+                    break
 
         return images
 

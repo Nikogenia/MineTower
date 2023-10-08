@@ -1,12 +1,13 @@
 from flask_socketio import SocketIO, disconnect, emit, Namespace
-from flask import request, session
+from flask import request
 
 from app import app, General
 from session import get_user
 
 
 sio = SocketIO(app, cors_allowed_origins=app.config["CORS_ORIGINS"],
-               manage_session=False, engineio_logger=app.config["DEBUG"])
+               manage_session=False, engineio_logger=app.config["DEBUG"],
+               max_http_buffer_size=1e8, ping_timeout=8)
 
 
 master = None

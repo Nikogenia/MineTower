@@ -61,6 +61,8 @@ public final class Main extends Plugin {
 
     public void updateMotd() {
 
+        Main.getSql().getSession().clear();
+
         motd = sql.getMotd();
 
     }

@@ -15,6 +15,8 @@ public class API {
 
     public API() {
 
+        Main.getSql().getSession().clear();
+
         Map<String, String> auth = new HashMap<>();
         auth.put("key", Main.getSql().getGeneralEntry("api_key"));
         auth.put("id", Main.getConfig().getName());

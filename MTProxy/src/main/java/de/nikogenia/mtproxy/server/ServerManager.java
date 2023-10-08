@@ -16,6 +16,8 @@ public class ServerManager {
 
     public void updateServers() {
 
+        Main.getSql().getSession().clear();
+
         List<String> oldServers = new ArrayList<>(getProxy().getConfig().getServersCopy().keySet());
 
         for (SQLInstance server : Main.getSql().getInstances()) {

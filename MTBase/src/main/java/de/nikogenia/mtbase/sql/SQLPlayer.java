@@ -41,6 +41,15 @@ public class SQLPlayer {
     @Column(name = "last_disconnect")
     Timestamp lastDisconnect;
 
+    @Column(name = "ban_until")
+    Timestamp banUntil;
+
+    @Column(name = "ban_reason", nullable = false)
+    String banReason;
+
+    @Column(name = "status", nullable = false)
+    String status;
+
     public Integer getId() {
         return id;
     }
@@ -119,6 +128,30 @@ public class SQLPlayer {
 
     public void setLastDisconnect(Timestamp lastDisconnect) {
         this.lastDisconnect = lastDisconnect;
+    }
+
+    public Timestamp getBanUntil() {
+        return banUntil;
+    }
+
+    public void setBanUntil(Timestamp banUntil) {
+        this.banUntil = banUntil;
+    }
+
+    public String getBanReason() {
+        return banReason;
+    }
+
+    public void setBanReason(String banReason) {
+        this.banReason = banReason;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

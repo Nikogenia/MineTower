@@ -2,6 +2,7 @@ package de.nikogenia.mtbase;
 
 import de.nikogenia.mtbase.api.API;
 import de.nikogenia.mtbase.config.Config;
+import de.nikogenia.mtbase.listeners.ChatListeners;
 import de.nikogenia.mtbase.listeners.ConnectionListeners;
 import de.nikogenia.mtbase.sql.SQL;
 import de.nikogenia.mtbase.utils.FileConfig;
@@ -25,6 +26,8 @@ public final class MTBase extends JavaPlugin {
 
     private List<String> commands;
 
+    private boolean customTabList;
+
     @Override
     public void onLoad() {
 
@@ -36,10 +39,14 @@ public final class MTBase extends JavaPlugin {
 
         sql = new SQL();
 
+        customTabList = false;
+
     }
 
     @Override
     public void onEnable() {
+
+        getLogger().info("Enable server as " + getConfiguration().getName());
 
         getLogger().info("Setup SQL");
         sql.build();
@@ -48,6 +55,7 @@ public final class MTBase extends JavaPlugin {
         api = new API();
 
         Bukkit.getPluginManager().registerEvents(new ConnectionListeners(), this);
+        Bukkit.getPluginManager().registerEvents(new ChatListeners(), this);
 
         commands = new ArrayList<>();
 
@@ -96,6 +104,10 @@ public final class MTBase extends JavaPlugin {
 
     public static API getApi() {
         return instance.api;
+    }
+
+    public static void setCustomTabList(boolean customTabList) {
+        instance.customTabList = customTabList;
     }
 
 }

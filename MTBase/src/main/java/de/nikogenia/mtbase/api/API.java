@@ -19,6 +19,8 @@ public class API {
 
     public API() {
 
+        MTBase.getSql().getSession().clear();
+
         Map<String, String> auth = new HashMap<>();
         auth.put("key", MTBase.getSql().getGeneralEntry("api_key"));
         auth.put("id", MTBase.getConfiguration().getName());

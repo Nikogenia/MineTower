@@ -1,3 +1,5 @@
+import sys
+
 from socketio import Client, exceptions
 
 
@@ -114,6 +116,10 @@ class API:
 
         for server in self.main.sm.servers:
             logs[server.instance.name] = server.logs
+
+        size = sys.getsizeof(logs)
+        if size > 10_000:
+            self.main.logger.warning(f"Sending big package for logs with size {size}")
 
         self.client.emit("logs", logs, namespace=self.namespace)
 

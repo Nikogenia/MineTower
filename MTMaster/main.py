@@ -37,6 +37,9 @@ class Main:
         self.sql = sql.SQL(self)
         self.sql.init()
 
+        if not self.running:
+            return
+
         self.dc = Docker(self)
 
         self.api = API(self)

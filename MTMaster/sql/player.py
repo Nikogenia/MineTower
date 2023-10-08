@@ -20,3 +20,6 @@ class Player(Base):
     number_joined = Column(INTEGER(unsigned=True), server_default=text("0"))
     last_joined = Column(TIMESTAMP, nullable=True, server_default=null())
     last_disconnect = Column(TIMESTAMP, nullable=True, server_default=null())
+    ban_until = Column(TIMESTAMP, nullable=True, server_default=null())
+    ban_reason = Column(VARCHAR(255), server_default="")
+    status = Column(VARCHAR(255), server_default="online")

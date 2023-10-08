@@ -21,18 +21,28 @@ class SQL:
 
         self.main = main
 
-        self.engine = create_engine(
-            f"mysql+mysqldb://{self.config['user']}:{self.config['password']}" +
-            f"@{self.config['host']}:{self.config['port']}" +
-            f"/{self.config['database']}?charset=utf8mb4",
-            pool_recycle=3600)
+        try:
 
-        if self.main.debug:
-            self.engine.echo = True
+            self.engine = create_engine(
+                f"mysql+mysqldb://{self.config['user']}:{self.config['password']}" +
+                f"@{self.config['host']}:{self.config['port']}" +
+                f"/{self.config['database']}?charset=utf8mb4",
+                pool_recycle=3600)
 
-        Base.metadata.create_all(bind=self.engine)
+            if self.main.debug:
+                self.engine.echo = True
 
-        self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=False))
+            Base.metadata.create_all(bind=self.engine)
+
+            self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=False))
+
+        except Exception as e:
+
+            self.main.logger.error("ATTENTION")
+            self.main.logger.error(f"MySQL setup failed! {e}")
+            self.main.logger.error("Abort")
+
+            self.main.quit()
 
     @property
     def config(self):

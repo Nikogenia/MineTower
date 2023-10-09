@@ -26,6 +26,9 @@ public class SQL {
         prop.setProperty("hibernate.connection.password", config.getPassword());
         prop.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
         prop.setProperty("hibernate.jdbc.time_zone", "UTC");
+        prop.setProperty("connection.autoReconnect", "true");
+        prop.setProperty("connection.autoReconnectForPools", "true");
+        prop.setProperty("connection.is-connection-validation-required", "true");
         prop.setProperty("show_sql", String.valueOf(Main.getConfig().isDebug()));
 
         SessionFactory sessionFactory = new Configuration()

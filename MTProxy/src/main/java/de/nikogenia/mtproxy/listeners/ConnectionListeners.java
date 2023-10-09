@@ -32,7 +32,7 @@ public class ConnectionListeners implements Listener {
             player.setNumberJoined(0);
             player.setTimePlayed(0);
             player.setBanReason("");
-            player.setStatus("online");
+            player.setStatus(0);
         }
         player.setName(event.getPlayer().getName());
 

@@ -1,6 +1,5 @@
 package de.nikogenia.mtsmp.sql;
 
-import de.nikogenia.mtbase.sql.SQLCluster;
 import de.nikogenia.mtbase.sql.SQLPlayer;
 import jakarta.persistence.*;
 

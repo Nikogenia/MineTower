@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShopManager {
@@ -15,11 +16,16 @@ public class ShopManager {
 
     public ShopManager() {
 
+        shops = new ArrayList<>();
+
         updateShops();
 
     }
 
     public void updateShops() {
+
+        MTBase.getSql().getSession().getTransaction().rollback();
+        MTBase.getSql().getSession().beginTransaction();
 
         shops = MTBase.getSql().query("FROM SQLShop", SQLShop.class).list();
 
@@ -35,8 +41,8 @@ public class ShopManager {
             int minZ = Math.min(Integer.parseInt(points[i + 1]), Integer.parseInt(points[i + 3]));
             int maxX = Math.max(Integer.parseInt(points[i]), Integer.parseInt(points[i + 2]));
             int maxZ = Math.max(Integer.parseInt(points[i + 1]), Integer.parseInt(points[i + 3]));
-            if (minX <= pos.getX() && pos.getX() <= maxX &&
-                minZ <= pos.getZ() && pos.getZ() <= maxZ) return true;
+            if (minX <= pos.getBlockX() && pos.getBlockX() <= maxX &&
+                minZ <= pos.getBlockZ() && pos.getBlockZ() <= maxZ) return true;
         }
 
         return false;
@@ -65,6 +71,10 @@ public class ShopManager {
         return Component.text("[").color(NamedTextColor.GRAY)
                 .append(Component.text("Shop").color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD))
                 .append(Component.text("] "));
+    }
+
+    public static int getMaxShopHeight() {
+        return 100;
     }
 
 }

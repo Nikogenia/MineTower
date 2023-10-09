@@ -10,3 +10,6 @@ commands:
   shop:
     description: "Shop information and administration"
     usage: "Type '/shop help' for more information!"
+  status:
+    description: "Change status"
+    usage: "Type '/status help' for more information!"

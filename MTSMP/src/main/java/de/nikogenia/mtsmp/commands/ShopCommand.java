@@ -1,6 +1,7 @@
 package de.nikogenia.mtsmp.commands;
 
 import de.nikogenia.mtbase.MTBase;
+import de.nikogenia.mtbase.permission.Perm;
 import de.nikogenia.mtbase.sql.SQLPlayer;
 import de.nikogenia.mtbase.utils.CommandUtils;
 import de.nikogenia.mtsmp.Main;
@@ -10,13 +11,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,16 +24,14 @@ import java.util.List;
 
 public class ShopCommand implements CommandExecutor, TabCompleter {
 
-    private static final String ADMIN_PERM = "minetower.shop.admin";
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (!CommandUtils.checkArgsMin(sender, args, 1, ShopManager.getPrefix())) return true;
 
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case "help":
-                if (sender.hasPermission(ADMIN_PERM)) sender.sendMessage(CommandUtils.buildHelp(
+                if (sender.hasPermission(Perm.SHOP_ADMIN.getValue())) sender.sendMessage(CommandUtils.buildHelp(
                         command, ShopManager.getPrefix(), "help", "info", "info <shop>",
                         "owner <player>", "owner <player> <shop>", "list"));
                 else sender.sendMessage(CommandUtils.buildHelp(
@@ -44,12 +41,12 @@ public class ShopCommand implements CommandExecutor, TabCompleter {
                 info(sender, command, label, args);
                 break;
             case "owner":
-                if (!CommandUtils.checkPerm(sender, ADMIN_PERM, ShopManager.getPrefix())) return true;
+                if (!CommandUtils.checkPerm(sender, Perm.SHOP_ADMIN.getValue(), ShopManager.getPrefix())) return true;
                 owner(sender, command, label, args);
                 break;
             case "reload":
                 if (!CommandUtils.checkArgsCount(sender, args, 1, ShopManager.getPrefix())) return true;
-                if (!CommandUtils.checkPerm(sender, ADMIN_PERM, ShopManager.getPrefix())) return true;
+                if (!CommandUtils.checkPerm(sender, Perm.SHOP_ADMIN.getValue(), ShopManager.getPrefix())) return true;
                 Main.getShopManager().updateShops();
                 sender.sendMessage(ShopManager.getPrefix().append(Component
                         .text("All shops were reloaded!").color(NamedTextColor.GREEN)));
@@ -75,7 +72,7 @@ public class ShopCommand implements CommandExecutor, TabCompleter {
                 result.add("help");
                 result.add("info");
                 result.add("list");
-                if (sender.hasPermission(ADMIN_PERM)) {
+                if (sender.hasPermission(Perm.SHOP_ADMIN.getValue())) {
                     result.add("owner");
                     result.add("reload");
                 }
@@ -85,6 +82,7 @@ public class ShopCommand implements CommandExecutor, TabCompleter {
                     Main.getShopManager().getShops().forEach(shop -> result.add(shop.getName()));
                 }
                 if (args[0].equals("owner")) {
+                    MTBase.getSql().getSession().clear();
                     MTBase.getSql().getPlayers().forEach(player -> result.add(player.getName()));
                 }
                 break;
@@ -166,6 +164,7 @@ public class ShopCommand implements CommandExecutor, TabCompleter {
 
         shop.setOwner(player);
 
+        MTBase.getSql().getSession().merge(shop);
         MTBase.getSql().getSession().getTransaction().commit();
         MTBase.getSql().getSession().beginTransaction();
 

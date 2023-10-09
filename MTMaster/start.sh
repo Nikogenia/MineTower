@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Make directory
-mkdir -p /minetower/master
+mkdir -p /mt/master
 
 # Copy files
 shopt -s extglob
-cp -r !(start.sh|requirements.txt) /minetower/master/
+cp -r !(start.sh|requirements.txt) /mt/master/
 
 # Change workdir
 # shellcheck disable=SC2164
-cd /minetower/master
+cd /mt/master
 
 # Log version
 echo "----------------------------------------"

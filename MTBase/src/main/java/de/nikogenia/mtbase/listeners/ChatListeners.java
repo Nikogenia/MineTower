@@ -1,5 +1,6 @@
 package de.nikogenia.mtbase.listeners;
 
+import de.nikogenia.mtbase.permission.Rank;
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatDecorateEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -20,13 +21,14 @@ public class ChatListeners implements Listener {
     @EventHandler
     public void onChat(AsyncChatEvent event) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
         event.renderer((Player source, Component displayName, Component message, Audience viewer) ->
                 Component.text("[").color(NamedTextColor.GRAY)
                         .append(Component.text(formatter.format(LocalDateTime.now())).color(NamedTextColor.GRAY))
                         .append(Component.text("] <"))
-                        .append(displayName)
+                        .append(Rank.fromPlayer(source).getFullPrefix().colorIfAbsent(NamedTextColor.GRAY)
+                                .append(displayName.color(Rank.fromPlayer(source).getColor())))
                         .append(Component.text("> "))
                         .append(message.color(NamedTextColor.WHITE)));
 

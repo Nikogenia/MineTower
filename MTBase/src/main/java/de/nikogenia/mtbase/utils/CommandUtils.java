@@ -50,7 +50,7 @@ public class CommandUtils {
     public static void invalidArg(CommandSender sender, int pos, Component prefix) {
 
         sender.sendMessage(prefix.append(Component
-                .text("Invalid " + getOrdinalName(pos) + " argument!")
+                .text("Invalid " + StringUtils.ordinalName(pos) + " argument!")
                 .color(NamedTextColor.RED)));
 
     }
@@ -120,21 +120,6 @@ public class CommandUtils {
         }
 
         return prefix.append(builder.build());
-
-    }
-
-    public static String getOrdinalName(int i) {
-
-        String[] suffixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
-
-        switch (i % 100) {
-            case 11:
-            case 12:
-            case 13:
-                return i + "th";
-            default:
-                return i + suffixes[i % 10];
-        }
 
     }
 

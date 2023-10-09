@@ -113,11 +113,12 @@ class API:
     def logs(self, data):
 
         logs = {}
+        size = 0
 
         for server in self.main.sm.servers:
             logs[server.instance.name] = server.logs
+            size = sys.getsizeof(server.logs)
 
-        size = sys.getsizeof(logs)
         if size > 10_000:
             self.main.logger.warning(f"Sending big package for logs with size {size}")
 

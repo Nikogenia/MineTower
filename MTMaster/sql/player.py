@@ -22,4 +22,4 @@ class Player(Base):
     last_disconnect = Column(TIMESTAMP, nullable=True, server_default=null())
     ban_until = Column(TIMESTAMP, nullable=True, server_default=null())
     ban_reason = Column(VARCHAR(255), server_default="")
-    status = Column(VARCHAR(255), server_default="online")
+    status = Column(INTEGER(unsigned=True), server_default=text("0"))

@@ -53,7 +53,7 @@ services:
     container_name: minetower-master
     image: nikogenia/mt-master:latest
     volumes:
-      - /root/minetower:/minetower
+      - /root/minetower:/mt
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     networks:

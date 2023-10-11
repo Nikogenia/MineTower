@@ -28,15 +28,12 @@ public class SQL {
 
         Properties prop = new Properties();
         prop.setProperty("hibernate.connection.url", "jdbc:mysql://" + config.getHost() + ":" +
-                config.getPort() + "/" + config.getDatabase());
+                config.getPort() + "/" + config.getDatabase() + "?autoReconnect=true");
         prop.setProperty("dialect", "org.hibernate.dialect.MySQL8Dialect");
         prop.setProperty("hibernate.connection.username", config.getUser());
         prop.setProperty("hibernate.connection.password", config.getPassword());
         prop.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
         prop.setProperty("hibernate.jdbc.time_zone", "UTC");
-        prop.setProperty("connection.autoReconnect", "true");
-        prop.setProperty("connection.autoReconnectForPools", "true");
-        prop.setProperty("connection.is-connection-validation-required", "true");
         prop.setProperty("show_sql", String.valueOf(MTBase.getConfiguration().isDebug()));
 
         SessionFactory sessionFactory = configuration

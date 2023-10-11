@@ -29,8 +29,6 @@ public final class MTBase extends JavaPlugin {
 
     private TabListManager tabListManager;
 
-    private boolean customTabList;
-
     @Override
     public void onLoad() {
 
@@ -112,6 +110,10 @@ public final class MTBase extends JavaPlugin {
 
     public static TabListManager getTabListManager() {
         return instance.tabListManager;
+    }
+
+    public static void setTabListManager(TabListManager manager) {
+        instance.tabListManager = manager;
     }
 
 }

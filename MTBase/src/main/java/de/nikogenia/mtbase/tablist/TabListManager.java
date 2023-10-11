@@ -15,11 +15,9 @@ import java.util.List;
 
 public class TabListManager {
 
-    private boolean customTabList;
+    public void setHeaderFooter(Player player) {
 
-    public TabListManager() {
-
-        customTabList = false;
+        setHeaderFooter(player, getDefaultHeader(), getDefaultFooter());
 
     }
 
@@ -96,14 +94,6 @@ public class TabListManager {
 
         }
 
-    }
-
-    public void setCustomTabList(boolean customTabList) {
-        this.customTabList = customTabList;
-    }
-
-    public boolean isCustomTabList() {
-        return customTabList;
     }
 
 }

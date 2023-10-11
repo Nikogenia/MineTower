@@ -16,6 +16,15 @@ public class InteractionListeners implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
 
+        if (event.getBlock().getWorld().getName().equals("world_nether")) {
+            if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+            Location netherSpawn = new Location(event.getBlock().getWorld(), -13, 77, 0);
+            if (event.getBlock().getLocation().distance(netherSpawn) < SpawnManager.getNetherSpawnRadius()) {
+                event.setCancelled(true);
+            }
+            return;
+        }
+
         if (!event.getBlock().getWorld().getName().equals("world")) return;
 
         Location spawn = event.getBlock().getWorld().getSpawnLocation();
@@ -41,6 +50,15 @@ public class InteractionListeners implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
+
+        if (event.getBlock().getWorld().getName().equals("world_nether")) {
+            if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+            Location netherSpawn = new Location(event.getBlock().getWorld(), -13, 77, 0);
+            if (event.getBlock().getLocation().distance(netherSpawn) < SpawnManager.getNetherSpawnRadius()) {
+                event.setCancelled(true);
+            }
+            return;
+        }
 
         if (!event.getBlock().getWorld().getName().equals("world")) return;
 

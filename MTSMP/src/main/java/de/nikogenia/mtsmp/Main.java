@@ -1,7 +1,10 @@
 package de.nikogenia.mtsmp;
 
 import de.nikogenia.mtbase.MTBase;
+import de.nikogenia.mtbase.tablist.TabListManager;
 import de.nikogenia.mtsmp.commands.ShopCommand;
+import de.nikogenia.mtsmp.commands.SpawnCommand;
+import de.nikogenia.mtsmp.commands.StatusCommand;
 import de.nikogenia.mtsmp.listeners.ConnectionListeners;
 import de.nikogenia.mtsmp.listeners.EntityListeners;
 import de.nikogenia.mtsmp.listeners.InteractionListeners;
@@ -10,6 +13,7 @@ import de.nikogenia.mtsmp.shop.ShopManager;
 import de.nikogenia.mtsmp.spawn.SpawnManager;
 import de.nikogenia.mtsmp.sql.SQLShop;
 import de.nikogenia.mtsmp.status.StatusManager;
+import de.nikogenia.mtsmp.tablist.CustomTabListManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,8 +36,6 @@ public final class Main extends JavaPlugin {
 
         MTBase.getSql().addTable(SQLShop.class);
 
-        MTBase.getTabListManager().setCustomTabList(true);
-
     }
 
     @Override
@@ -42,6 +44,7 @@ public final class Main extends JavaPlugin {
         shopManager = new ShopManager();
         spawnManager = new SpawnManager();
         statusManager = new StatusManager();
+        MTBase.setTabListManager(new CustomTabListManager());
 
         Bukkit.getPluginManager().registerEvents(new EntityListeners(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerListeners(), this);
@@ -49,7 +52,8 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ConnectionListeners(), this);
 
         Objects.requireNonNull(getCommand("shop")).setExecutor(new ShopCommand());
-        Objects.requireNonNull(getCommand("status")).setExecutor(new ShopCommand());
+        Objects.requireNonNull(getCommand("status")).setExecutor(new StatusCommand());
+        Objects.requireNonNull(getCommand("spawn")).setExecutor(new SpawnCommand());
 
     }
 

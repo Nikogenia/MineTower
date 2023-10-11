@@ -1,6 +1,7 @@
 package de.nikogenia.mtsmp.tablist;
 
 import de.nikogenia.mtbase.permission.Rank;
+import de.nikogenia.mtbase.tablist.TabListManager;
 import de.nikogenia.mtsmp.Main;
 import de.nikogenia.mtsmp.status.Status;
 import net.kyori.adventure.text.Component;
@@ -13,15 +14,15 @@ import org.bukkit.scoreboard.Team;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomTabList {
+public class CustomTabListManager extends TabListManager {
 
-    public static void setAllPlayerTeams() {
+    public void setAllPlayerTeams() {
 
         for (Player player : Bukkit.getOnlinePlayers()) setPlayerTeams(player);
 
     }
 
-    public static void setPlayerTeams(Player player) {
+    public void setPlayerTeams(Player player) {
 
         List<Player> assigned = new ArrayList<>();
 

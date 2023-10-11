@@ -23,15 +23,15 @@ public class PlayerListeners implements Listener {
 
         if (!SpawnManager.isInFlyRadius(event.getPlayer())) return;
 
-        event.getPlayer().sendActionBar(Component.text("Press ").decorate(TextDecoration.ITALIC)
-                        .append(Component.keybind("key.swapOffhand"))
-                        .append(Component.text(" to boost yourself!")));
-
         event.setCancelled(true);
 
         event.getPlayer().setGliding(true);
 
         Main.getSpawnManager().getFlying().put(event.getPlayer(), SpawnManager.getBoostCount());
+
+        event.getPlayer().sendActionBar(Component.text("Press ").decorate(TextDecoration.ITALIC)
+                        .append(Component.keybind("key.swapOffhand"))
+                        .append(Component.text(" to boost yourself!")));
 
     }
 

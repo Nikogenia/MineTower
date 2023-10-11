@@ -8,13 +8,13 @@ public enum Status {
 
     ONLINE(0, "ONLINE", NamedTextColor.GREEN),
     CHILL(1, "CHILL", NamedTextColor.DARK_PURPLE),
-    GRIND(2, "GRIND", NamedTextColor.DARK_GRAY),
+    GRIND(2, "GRIND", NamedTextColor.GRAY),
     BUILD(3, "BUILD", NamedTextColor.YELLOW),
     REDSTONE(4, "REDSTONE", NamedTextColor.RED),
     AFK(5, "AFK", NamedTextColor.BLUE),
     TROLL(6, "TROLL", null),
     REC(7, "REC", NamedTextColor.DARK_RED),
-    LIVE(8, "LIVE", NamedTextColor.AQUA);
+    LIVE(8, "LIVE", NamedTextColor.DARK_BLUE);
 
     private final int id;
 

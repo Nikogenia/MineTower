@@ -13,3 +13,6 @@ commands:
   status:
     description: "Change status"
     usage: "Type '/status help' for more information!"
+  spawn:
+    description: "Teleport to spawn"
+    usage: "No arguments!"

@@ -3,6 +3,7 @@ import string
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.sql import text
 
 from sql.base import Base
 from sql.general import General
@@ -85,6 +86,20 @@ class SQL:
 
         self.init_general()
         self.init_agent()
+        self.init_time_counter()
+
+    def init_time_counter(self):
+
+        EVENT = f"""CREATE EVENT IF NOT EXISTS time_counter
+            ON SCHEDULE EVERY 1 SECOND
+            DO
+            UPDATE {self.config['database']}.player
+            SET time_played = time_played + 1
+            WHERE player.online = true;"""
+
+        session = self.Session()
+
+        session.execute(text(EVENT))
 
     def init_agent(self):
 

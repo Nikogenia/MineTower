@@ -17,7 +17,7 @@ class WaterfallServer(Server):
                        f"{DOCKER_IMAGE_PREFIX}waterfall:{self.instance.version}",
                        self.instance.host, {"25565/tcp": 25565},
                        [f"{self.dc.root_path}/{self.instance.name}:/proxy"],
-                       {"TZ": self.sm.main.timezone})
+                       {"TZ": self.sm.main.timezone, "MEMORY": self.instance.memory})
 
         self.logs = self.dc.get_logs(self.docker_name).decode("utf-8")
 

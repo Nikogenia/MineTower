@@ -17,7 +17,7 @@ class PaperServer(Server):
                        f"{DOCKER_IMAGE_PREFIX}paper:{self.instance.version}",
                        self.instance.host, {},
                        [f"{self.dc.root_path}/{self.instance.name}:/server"],
-                       {"TZ": self.sm.main.timezone})
+                       {"TZ": self.sm.main.timezone, "MEMORY": self.instance.memory})
 
         self.logs = self.dc.get_logs(self.docker_name).decode("utf-8")
 

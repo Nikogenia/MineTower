@@ -15,7 +15,7 @@ class PaperServer(Server):
         self.logger.info(f"Create server {self.instance.name}")
         self.dc.create(self.docker_name,
                        f"{DOCKER_IMAGE_PREFIX}paper:{self.instance.version}",
-                       self.instance.host, {},
+                       self.instance.host, {"24454/udp": 24454} if self.instance.name == "smp" else {},
                        [f"{self.dc.root_path}/{self.instance.name}:/server"],
                        {"TZ": self.sm.main.timezone, "MEMORY": self.instance.memory})
 

@@ -154,6 +154,18 @@ public class ShopCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
+        if (args[1].equals("-")) {
+            shop.setOwner(null);
+            MTBase.getSql().getSession().merge(shop);
+            MTBase.getSql().getSession().getTransaction().commit();
+            MTBase.getSql().getSession().beginTransaction();
+            sender.sendMessage(ShopManager.getPrefix().append(Component
+                    .text("Successfully cleared the owner of ").color(NamedTextColor.GREEN)
+                    .append(Component.text(shop.getName()).color(NamedTextColor.GOLD))
+                    .append(Component.text("!"))));
+            return;
+        }
+
         SQLPlayer player = MTBase.getSql().getPlayerByName(args[1]);
 
         if (player == null) {

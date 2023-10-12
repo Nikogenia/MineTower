@@ -39,17 +39,19 @@ public class SpawnManager {
 
                     if (!player.getGameMode().equals(GameMode.SURVIVAL)) continue;
 
-                    Location spawn = Objects.requireNonNull(Bukkit.getWorld("world")).getSpawnLocation();
-                    spawn.setY(player.getY());
-                    if (player.getLocation().distance(spawn) < getSpawnRadius()) {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION,
-                                20, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,
-                                20, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,
-                                20, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,
-                                20, 1, false, false));
+                    if (player.getWorld().getName().equals("world")) {
+                        Location spawn = player.getWorld().getSpawnLocation();
+                        spawn.setY(player.getY());
+                        if (player.getLocation().distance(spawn) < getSpawnRadius()) {
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION,
+                                    20, 255, false, false));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,
+                                    20, 255, false, false));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,
+                                    20, 255, false, false));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,
+                                    20, 1, false, false));
+                        }
                     }
 
                     if (isInFlyRadius(player) & !flying.containsKey(player)) {

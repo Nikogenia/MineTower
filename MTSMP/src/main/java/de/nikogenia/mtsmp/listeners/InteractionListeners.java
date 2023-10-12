@@ -6,10 +6,16 @@ import de.nikogenia.mtsmp.shop.ShopManager;
 import de.nikogenia.mtsmp.spawn.SpawnManager;
 import de.nikogenia.mtsmp.sql.SQLShop;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.Arrays;
 
 public class InteractionListeners implements Listener {
 
@@ -78,6 +84,31 @@ public class InteractionListeners implements Listener {
             if (shop.getOwner().getUuid().equals(event.getPlayer().getUniqueId().toString()) &
                     event.getBlock().getY() <= ShopManager.getMaxShopHeight()) return;
             event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler
+    public void onInteractEntity(PlayerInteractEntityEvent event) {
+
+        if (Arrays.asList(EntityType.ITEM_FRAME, EntityType.GLOW_ITEM_FRAME).contains(event.getRightClicked().getType())) {
+            if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+            if (event.getRightClicked().getScoreboardTags().contains("protected")) {
+                event.setCancelled(true);
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+
+        if (event.getClickedBlock() == null) return;
+        if (event.getClickedBlock().getType().equals(Material.CHISELED_BOOKSHELF)) {
+            if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+            if (event.getClickedBlock().getY() > 140) {
+                event.setCancelled(true);
+            }
         }
 
     }

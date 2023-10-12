@@ -14,7 +14,14 @@ public enum Status {
     AFK(5, "AFK", NamedTextColor.BLUE),
     TROLL(6, "TROLL", null),
     REC(7, "REC", NamedTextColor.DARK_RED),
-    LIVE(8, "LIVE", NamedTextColor.DARK_BLUE);
+    LIVE(8, "LIVE", NamedTextColor.DARK_BLUE),
+    EXPLORE(9, "EXPLORE", NamedTextColor.BLACK),
+    TOUCH_GRASS(10, "TOUCH GRASS", NamedTextColor.AQUA),
+    HELL_HUNTER(11, "HELL HUNTER", NamedTextColor.RED),
+    SAD(12, "SAD", NamedTextColor.DARK_GRAY),
+    STONKS(13, "STONKS", NamedTextColor.GOLD),
+    NO_LIFE(14, "NO LIFE", NamedTextColor.LIGHT_PURPLE),
+    FARM(15, "FARM", NamedTextColor.GOLD);
 
     private final int id;
 

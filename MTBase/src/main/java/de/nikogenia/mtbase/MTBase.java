@@ -1,6 +1,7 @@
 package de.nikogenia.mtbase;
 
 import de.nikogenia.mtbase.api.API;
+import de.nikogenia.mtbase.command.RankCommand;
 import de.nikogenia.mtbase.config.Config;
 import de.nikogenia.mtbase.listeners.ChatListeners;
 import de.nikogenia.mtbase.listeners.ConnectionListeners;
@@ -14,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 public final class MTBase extends JavaPlugin {
 
@@ -72,6 +74,8 @@ public final class MTBase extends JavaPlugin {
 
             }
         }.runTaskTimer(this, 1, 1);
+
+        Objects.requireNonNull(getCommand("rank")).setExecutor(new RankCommand());
 
     }
 

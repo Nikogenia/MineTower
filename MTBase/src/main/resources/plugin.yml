@@ -4,3 +4,7 @@ main: de.nikogenia.mtbase.MTBase
 api-version: '1.20'
 authors: [Nikogenia]
 description: The base Paper plugin for any server of the server network management engine MineTower
+commands:
+  rank:
+    description: "Manage ranks"
+    usage: "Type '/rank help' for more information!"

@@ -19,7 +19,7 @@ public class ConnectionListeners implements Listener {
                 .append(Component.text(" joined").color(NamedTextColor.GRAY)));
 
         MTBase.getTabListManager().setHeaderFooter(event.getPlayer());
-        MTBase.getTabListManager().setAllPlayerTeams();
+        //MTBase.getTabListManager().setAllPlayerTeams();
 
     }
 

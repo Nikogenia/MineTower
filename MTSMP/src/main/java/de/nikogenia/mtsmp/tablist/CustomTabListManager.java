@@ -18,7 +18,7 @@ public class CustomTabListManager extends TabListManager {
 
     public void setAllPlayerTeams() {
 
-        for (Player player : Bukkit.getOnlinePlayers()) setPlayerTeams(player);
+        //for (Player player : Bukkit.getOnlinePlayers()) setPlayerTeams(player);
 
     }
 

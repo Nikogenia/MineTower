@@ -1,8 +1,12 @@
+from utils import print, format_size_1024
+
 print("-----------------------")
 print("MineTower Backup Script")
 print("-----------------------")
 
 import os
+import time
+import schedule
 
 import paramiko
 from dotenv import load_dotenv
@@ -21,19 +25,6 @@ LOCAL_PATH = "./backups/"
 last_percentage = 0
 
 
-def format_size_1024(size: int) -> str:
-    """Format a size with a factor of 1024"""
-
-    for i in ["", "Ki", "Mi", "Gi", "Ti", "Pi"]:
-
-        if size < 1024:
-            return f"{size:.2f}{i}B"
-
-        size /= 1024
-
-    return f"{size:.2f}EiB"
-
-
 def progress(downloaded, total):
 
     global last_percentage
@@ -47,49 +38,67 @@ def progress(downloaded, total):
 
 def main():
 
-    print("Setup environment")
+    global last_percentage
 
-    os.makedirs(LOCAL_PATH, exist_ok=True)
+    try:
 
-    local = os.listdir(LOCAL_PATH)
+        print("Setup environment")
 
-    private_key = paramiko.ECDSAKey.from_private_key_file(KEY, PASSPHRASE)
+        last_percentage = 0
 
-    client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        os.makedirs(LOCAL_PATH, exist_ok=True)
 
-    client.connect(hostname=HOST, port=PORT, username=USER,
-                   pkey=private_key, passphrase=PASSPHRASE)
+        local = os.listdir(LOCAL_PATH)
 
-    print(f"Connected to '{HOST}' as '{USER}'")
+        private_key = paramiko.ECDSAKey.from_private_key_file(KEY, PASSPHRASE)
 
-    print("FILESYSTEM STATISTICS")
-    print(client.exec_command("df -h /dev/sda1")[1].read().decode("utf-8").strip())
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-    sftp = client.open_sftp()
+        client.connect(hostname=HOST, port=PORT, username=USER,
+                       pkey=private_key, passphrase=PASSPHRASE)
 
-    print("SCAN FOR NEW FILES")
-    for file in sftp.listdir(REMOTE_PATH):
+        print(f"Connected to '{HOST}' as '{USER}'")
 
-        if file in local:
-            print(f"File {file} already available")
-            continue
+        print("FILESYSTEM STATISTICS")
+        print(client.exec_command("df -h /dev/sda1")[1].read().decode("utf-8").strip())
 
-        print(f"New file '{file}' found")
+        sftp = client.open_sftp()
 
-        print("Start download")
-        sftp.get(REMOTE_PATH + file, LOCAL_PATH + file, progress)
+        print("SCAN FOR NEW FILES")
+        for file in sftp.listdir(REMOTE_PATH):
 
-        print("Download finished")
+            if file in local:
+                print(f"File {file} already available")
+                continue
 
-    print("SCAN COMPLETED")
+            print(f"New file '{file}' found")
 
-    sftp.close()
+            print("Start download")
+            sftp.get(REMOTE_PATH + file, LOCAL_PATH + file, progress)
 
-    client.close()
+            print("Download finished")
 
-    print("Connection closed")
+        print("SCAN COMPLETED")
+
+        sftp.close()
+
+        client.close()
+
+        print("Connection closed")
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+
+    print("SLEEP 1 HOUR")
 
 
 if __name__ == '__main__':
-    main()
+
+    print("Schedule tasks")
+    schedule.every().hour.at(":10").do(main)
+
+    print("Start scheduler")
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

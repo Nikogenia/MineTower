@@ -42,7 +42,7 @@ public class TabListManager {
 
     public static Component getDefaultFooter() {
 
-        String admins = "Li_Lord, Tillerheimer, Obi Wlan Kenobi and Nikogenia";
+        String admins = "Li_Lord, Rekiboi, Obi Wlan Kenobi and Nikogenia";
 
         return Component.text("").color(NamedTextColor.GRAY)
                 .appendNewline()
@@ -59,7 +59,7 @@ public class TabListManager {
                 .append(Component.text(" ]     "))
                 .appendNewline()
                 .append(Component.text("     [ "))
-                .append(Component.text("PixPlex Version 1.0").color(NamedTextColor.DARK_PURPLE))
+                .append(Component.text("PixPlex Version 1.1").color(NamedTextColor.DARK_PURPLE))
                 .append(Component.text(" ]     "));
 
     }

@@ -14,6 +14,7 @@ from sql.player import Player
 from sql.user import User
 from sql.cluster import Cluster
 from sql.shop import Shop
+from sql.home import Home
 
 
 class SQL:

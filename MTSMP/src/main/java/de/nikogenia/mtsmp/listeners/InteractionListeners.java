@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class InteractionListeners implements Listener {
 
@@ -177,11 +178,83 @@ public class InteractionListeners implements Listener {
     public void onInteract(PlayerInteractEvent event) {
 
         if (event.getClickedBlock() == null) return;
+
         if (event.getClickedBlock().getType().equals(Material.CHISELED_BOOKSHELF)) {
             if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
             if (event.getClickedBlock().getY() > 140) {
                 event.setCancelled(true);
             }
+        }
+
+        if (Arrays.asList(Material.ARMOR_STAND, Material.ITEM_FRAME, Material.GLOW_ITEM_FRAME)
+                .contains(event.getMaterial())) {
+
+            if (event.getClickedBlock().getWorld().getName().equals("world_nether")) {
+                if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+                Location netherSpawn = new Location(event.getClickedBlock().getWorld(), -13, 77, 0);
+                if (event.getClickedBlock().getLocation().distance(netherSpawn) < SpawnManager.getNetherSpawnRadius()) {
+                    event.setCancelled(true);
+                }
+                return;
+            }
+
+            if (!event.getClickedBlock().getWorld().getName().equals("world")) return;
+
+            Location spawn = event.getClickedBlock().getWorld().getSpawnLocation();
+            spawn.setY(event.getClickedBlock().getY());
+            if (event.getClickedBlock().getLocation().distance(spawn) < SpawnManager.getSpawnRadius()) {
+                if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+                SQLShop shop = Main.getShopManager().getShop(event.getClickedBlock().getLocation());
+                if (shop == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+                if (shop.getOwner() == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+                if (shop.getOwner().getUuid().equals(event.getPlayer().getUniqueId().toString()) &
+                        event.getClickedBlock().getY() <= ShopManager.getMaxShopHeight()) return;
+                event.setCancelled(true);
+            }
+
+        }
+
+        if (Arrays.asList(Material.ACACIA_TRAPDOOR, Material.BAMBOO_TRAPDOOR, Material.BIRCH_TRAPDOOR,
+                Material.IRON_TRAPDOOR, Material.CHERRY_TRAPDOOR, Material.CRIMSON_TRAPDOOR,
+                Material.DARK_OAK_TRAPDOOR, Material.OAK_TRAPDOOR, Material.JUNGLE_TRAPDOOR,
+                Material.MANGROVE_TRAPDOOR, Material.SPRUCE_TRAPDOOR, Material.WARPED_TRAPDOOR)
+                .contains(event.getClickedBlock().getType())) {
+
+            if (event.getClickedBlock().getWorld().getName().equals("world_nether")) {
+                if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+                Location netherSpawn = new Location(event.getClickedBlock().getWorld(), -13, 77, 0);
+                if (event.getClickedBlock().getLocation().distance(netherSpawn) < SpawnManager.getNetherSpawnRadius()) {
+                    event.setCancelled(true);
+                }
+                return;
+            }
+
+            if (!event.getClickedBlock().getWorld().getName().equals("world")) return;
+
+            Location spawn = event.getClickedBlock().getWorld().getSpawnLocation();
+            spawn.setY(event.getClickedBlock().getY());
+            if (event.getClickedBlock().getLocation().distance(spawn) < SpawnManager.getSpawnRadius()) {
+                if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+                SQLShop shop = Main.getShopManager().getShop(event.getClickedBlock().getLocation());
+                if (shop == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+                if (shop.getOwner() == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+                if (shop.getOwner().getUuid().equals(event.getPlayer().getUniqueId().toString()) &
+                        event.getClickedBlock().getY() <= ShopManager.getMaxShopHeight()) return;
+                event.setCancelled(true);
+            }
+
         }
 
     }
@@ -190,7 +263,11 @@ public class InteractionListeners implements Listener {
     public void onBoost(PlayerElytraBoostEvent event) {
 
         if (Main.getSpawnManager().getFlying().containsKey(event.getPlayer())) {
-            if (!event.getPlayer().getInventory().contains(Material.ELYTRA)) {
+            if (event.getPlayer().getInventory().getChestplate() == null) {
+                event.setCancelled(true);
+                return;
+            }
+            if (!event.getPlayer().getInventory().getChestplate().getType().equals(Material.ELYTRA)) {
                 event.setCancelled(true);
             }
         }

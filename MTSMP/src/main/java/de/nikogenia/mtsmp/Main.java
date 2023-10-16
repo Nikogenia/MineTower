@@ -2,15 +2,15 @@ package de.nikogenia.mtsmp;
 
 import de.nikogenia.mtbase.MTBase;
 import de.nikogenia.mtbase.tablist.TabListManager;
-import de.nikogenia.mtsmp.commands.ShopCommand;
-import de.nikogenia.mtsmp.commands.SpawnCommand;
-import de.nikogenia.mtsmp.commands.StatusCommand;
+import de.nikogenia.mtsmp.commands.*;
+import de.nikogenia.mtsmp.home.HomeManager;
 import de.nikogenia.mtsmp.listeners.ConnectionListeners;
 import de.nikogenia.mtsmp.listeners.EntityListeners;
 import de.nikogenia.mtsmp.listeners.InteractionListeners;
 import de.nikogenia.mtsmp.listeners.PlayerListeners;
 import de.nikogenia.mtsmp.shop.ShopManager;
 import de.nikogenia.mtsmp.spawn.SpawnManager;
+import de.nikogenia.mtsmp.sql.SQLHome;
 import de.nikogenia.mtsmp.sql.SQLShop;
 import de.nikogenia.mtsmp.status.StatusManager;
 import de.nikogenia.mtsmp.tablist.CustomTabListManager;
@@ -29,12 +29,15 @@ public final class Main extends JavaPlugin {
 
     private StatusManager statusManager;
 
+    private HomeManager homeManager;
+
     @Override
     public void onLoad() {
 
         instance = this;
 
         MTBase.getSql().addTable(SQLShop.class);
+        MTBase.getSql().addTable(SQLHome.class);
 
     }
 
@@ -44,6 +47,7 @@ public final class Main extends JavaPlugin {
         shopManager = new ShopManager();
         spawnManager = new SpawnManager();
         statusManager = new StatusManager();
+        homeManager = new HomeManager();
         MTBase.setTabListManager(new CustomTabListManager());
 
         Bukkit.getPluginManager().registerEvents(new EntityListeners(), this);
@@ -54,6 +58,8 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("shop")).setExecutor(new ShopCommand());
         Objects.requireNonNull(getCommand("status")).setExecutor(new StatusCommand());
         Objects.requireNonNull(getCommand("spawn")).setExecutor(new SpawnCommand());
+        Objects.requireNonNull(getCommand("home")).setExecutor(new HomeCommand());
+        Objects.requireNonNull(getCommand("sethome")).setExecutor(new SetHomeCommand());
 
     }
 
@@ -78,6 +84,10 @@ public final class Main extends JavaPlugin {
 
     public static StatusManager getStatusManager() {
         return instance.statusManager;
+    }
+
+    public static HomeManager getHomeManager() {
+        return instance.homeManager;
     }
 
 }

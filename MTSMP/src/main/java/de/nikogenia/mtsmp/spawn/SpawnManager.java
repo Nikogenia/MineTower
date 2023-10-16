@@ -69,7 +69,7 @@ public class SpawnManager {
                             public void run() {
                                 flying.remove(player);
                             }
-                        }.runTaskLater(Main.getInstance(), 5);
+                        }.runTaskLater(Main.getInstance(), 1);
                     }
 
                 }

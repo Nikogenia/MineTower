@@ -16,3 +16,9 @@ commands:
   spawn:
     description: "Teleport to spawn"
     usage: "No arguments!"
+  home:
+    description: "Teleport to your home"
+    usage: "No arguments!"
+  sethome:
+    description: "Set your home to your current position"
+    usage: "No arguments!"

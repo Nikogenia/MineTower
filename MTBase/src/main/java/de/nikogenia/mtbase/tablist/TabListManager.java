@@ -42,12 +42,15 @@ public class TabListManager {
 
     public static Component getDefaultFooter() {
 
-        String admins = "Li_Lord, Rekiboi, Obi Wlan Kenobi and Nikogenia";
-
         return Component.text("").color(NamedTextColor.GRAY)
                 .appendNewline()
                 .append(Component.text("     [ "))
-                .append(Component.text("Administrated by " + admins).color(NamedTextColor.RED))
+                .append(Component.text("Administrated by Nikogenia").color(NamedTextColor.RED))
+                .append(Component.text(" ]     "))
+                .appendNewline()
+                .append(Component.text("     [ "))
+                .append(Component.text("Operated by Rekiboi, Obi Wlan Kenobi, Tillerheimer and bkmmoin"
+                ).color(NamedTextColor.GOLD))
                 .append(Component.text(" ]     "))
                 .appendNewline()
                 .append(Component.text("     [ "))

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 public enum Rank {
 
     ADMIN(10, "group.admin", "ADMIN", NamedTextColor.RED),
+    OP(20, "group.op", "OP", NamedTextColor.GOLD),
     MOD(30, "group.mod", "MOD", NamedTextColor.AQUA),
     MEMBER(90, "group.default", "", NamedTextColor.WHITE);
 

@@ -1,6 +1,14 @@
-VERSION = "1.1"
+VERSION = "2.0"
 AUTHOR = "Nikogenia"
 
-CONFIG = "./config.yml"
 
-DOCKER_IMAGE_PREFIX = "nikogenia/mt-"
+CONFIG_PATH = "/mt/config.yml"
+
+
+HOST_MASTER = 0, 2
+
+HOST_MYSQL = 1, 1
+HOST_INFLUXDB = 1, 2
+
+HOST_API = 2, 1
+HOST_CONSOLE = 2, 2

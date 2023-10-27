@@ -1,20 +1,9 @@
 import random
 import string
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.sql import text
+from mysql import connector
 
-from sql.base import Base
-from sql.general import General
-from sql.instance import Instance
-from sql.agent import Agent
-from sql.motd import Motd
-from sql.player import Player
-from sql.user import User
-from sql.cluster import Cluster
-from sql.shop import Shop
-from sql.home import Home
+from constant import HOST_MYSQL
 
 
 class SQL:
@@ -25,30 +14,28 @@ class SQL:
 
         try:
 
-            self.engine = create_engine(
-                f"mysql+mysqldb://{self.config['user']}:{self.config['password']}" +
-                f"@{self.config['host']}:{self.config['port']}" +
-                f"/{self.config['database']}?charset=utf8mb4",
-                pool_recycle=3600)
-
-            if self.main.debug:
-                self.engine.echo = True
-
-            Base.metadata.create_all(bind=self.engine)
-
-            self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=False))
+            self.connection = connector.connect(
+                host=self.dc.format_host(*HOST_MYSQL),
+                port=3306,
+                user="root",
+                password=self.config["mysql_password"]
+            )
 
         except Exception as e:
 
             self.main.logger.error("ATTENTION")
-            self.main.logger.error(f"MySQL setup failed! {e}")
+            self.main.logger.error(f"MySQL connection failed! {e}")
             self.main.logger.error("Abort")
 
             self.main.quit()
 
     @property
     def config(self):
-        return self.main.config["sql"]
+        return self.main.config
+
+    @property
+    def dc(self):
+        return self.main.dc
 
     @staticmethod
     def define_general_entry(session, name, value):

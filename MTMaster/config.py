@@ -1,43 +1,79 @@
+import random
+import string
 import sys
 
 import yaml
 
-from constant import *
+from constant import CONFIG_PATH
 
 
-TEMPLATE = """# ----------------
-# MineTower Master
-# ----------------
+TEMPLATE = """# ---------
+# MineTower
+# ---------
 
-# MySQL server
-sql:
-  host: 172.22.0.2
-  port: 3306
-  user: root
-  password:
-  database:
-    
-# API
-api:
-  url: "http://172.22.1.2:8080"
+# Name
+name: "minetower"
+full_name: "MineTower"
+
+# Path
+path: "/root/minetower"  # without '/' at the end
+
+# Public URLs
+console_url: "https://console.example.xyz"
+api_url: "https://api.example.xyz"
+
+# Exposed ports
+mysql_port: 3342
+influxdb_port: 8042
+console_port: 3042
+api_port: 5042
+
+# Docker
+docker_prefix: "minetower-"
+docker_network_name: "minetower"
+docker_network_subnet: "172.22.x.y"
+
+# Passwords (read only)
+mysql_password: "$PASSWORD1"  # DO NOT CHANGE!
+influxdb_password: "$PASSWORD2"  # DO NOT CHANGE!
+api_password: "$PASSWORD3"  # DO NOT CHANGE!
+
+# MySQL databases
+mysql_master: "minetower_master"
+mysql_luckperms: "minetower_luckperms"
+
+# InfluxDB organisation and bucket
+influxdb_org: "minetower"
+influxdb_logs: "logs"
+influxdb_commands: "commands"
+influxdb_events: "events"
+influxdb_retention: "4w"
+
 """
 
 
-def load(main):
+def load(logger):
 
     try:
 
-        with open(CONFIG, "r") as file:
+        logger.info("Load configuration file")
+        with open(CONFIG_PATH, "r") as file:
             return yaml.safe_load(file)
 
     except IOError:
 
-        main.logger.error("ATTENTION")
-        main.logger.error("Failed to load configuration!")
-        main.logger.error("Please adjust the MySQL server and API!")
-        main.logger.error("Abort")
+        logger.error("ATTENTION")
+        logger.error("Failed to load configuration!")
+        logger.error("Please adjust the values!")
+        logger.error("Abort")
 
-        with open(CONFIG, "w") as file:
-            file.write(TEMPLATE)
+        with open(CONFIG_PATH, "w") as file:
+            password1 = "".join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+            password2 = "".join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+            password3 = "".join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+            file.write(TEMPLATE
+                       .replace("$PASSWORD1", password1)
+                       .replace("$PASSWORD2", password2)
+                       .replace("$PASSWORD3", password3))
 
         sys.exit(0)

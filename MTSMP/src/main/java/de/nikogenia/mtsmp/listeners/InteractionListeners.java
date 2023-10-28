@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -175,6 +176,19 @@ public class InteractionListeners implements Listener {
     }
 
     @EventHandler
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+
+        if (event.getEntityType().equals(EntityType.ENDER_PEARL)) {
+            Location spawn = event.getLocation().getWorld().getSpawnLocation();
+            spawn.setY(event.getLocation().getY());
+            if (event.getLocation().distance(spawn) < SpawnManager.getSpawnRadius()) {
+                event.setCancelled(true);
+            }
+        }
+
+    }
+
+    @EventHandler
     public void onInteract(PlayerInteractEvent event) {
 
         if (event.getClickedBlock() == null) return;
@@ -186,7 +200,13 @@ public class InteractionListeners implements Listener {
             }
         }
 
-        if (Arrays.asList(Material.ARMOR_STAND, Material.ITEM_FRAME, Material.GLOW_ITEM_FRAME)
+        if (Arrays.asList(Material.ARMOR_STAND, Material.ITEM_FRAME, Material.GLOW_ITEM_FRAME,
+                        Material.BIRCH_BOAT, Material.BIRCH_CHEST_BOAT, Material.ACACIA_BOAT,
+                        Material.CHERRY_BOAT, Material.CHERRY_CHEST_BOAT, Material.ACACIA_CHEST_BOAT,
+                        Material.DARK_OAK_BOAT, Material.OAK_BOAT, Material.ACACIA_BOAT,
+                        Material.DARK_OAK_CHEST_BOAT, Material.JUNGLE_BOAT, Material.JUNGLE_CHEST_BOAT,
+                        Material.MANGROVE_BOAT, Material.MANGROVE_CHEST_BOAT, Material.OAK_CHEST_BOAT,
+                        Material.SPRUCE_BOAT, Material.SPRUCE_CHEST_BOAT)
                 .contains(event.getMaterial())) {
 
             if (event.getClickedBlock().getWorld().getName().equals("world_nether")) {

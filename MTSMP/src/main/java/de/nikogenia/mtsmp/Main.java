@@ -1,13 +1,9 @@
 package de.nikogenia.mtsmp;
 
 import de.nikogenia.mtbase.MTBase;
-import de.nikogenia.mtbase.tablist.TabListManager;
 import de.nikogenia.mtsmp.commands.*;
 import de.nikogenia.mtsmp.home.HomeManager;
-import de.nikogenia.mtsmp.listeners.ConnectionListeners;
-import de.nikogenia.mtsmp.listeners.EntityListeners;
-import de.nikogenia.mtsmp.listeners.InteractionListeners;
-import de.nikogenia.mtsmp.listeners.PlayerListeners;
+import de.nikogenia.mtsmp.listeners.*;
 import de.nikogenia.mtsmp.shop.ShopManager;
 import de.nikogenia.mtsmp.spawn.SpawnManager;
 import de.nikogenia.mtsmp.sql.SQLHome;
@@ -54,6 +50,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerListeners(), this);
         Bukkit.getPluginManager().registerEvents(new InteractionListeners(), this);
         Bukkit.getPluginManager().registerEvents(new ConnectionListeners(), this);
+        Bukkit.getPluginManager().registerEvents(new BlockListeners(), this);
 
         Objects.requireNonNull(getCommand("shop")).setExecutor(new ShopCommand());
         Objects.requireNonNull(getCommand("status")).setExecutor(new StatusCommand());

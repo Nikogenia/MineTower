@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -92,6 +93,21 @@ public class EntityListeners implements Listener {
         spawn.setY(event.getEntity().getY());
         if (event.getEntity().getLocation().distance(spawn) < SpawnManager.getSpawnRadius()) {
             event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler
+    public void onChangeBlock(EntityChangeBlockEvent event) {
+
+        if (!event.getEntity().getWorld().getName().equals("world")) return;
+
+        Location spawn = event.getBlock().getWorld().getSpawnLocation();
+        spawn.setY(event.getBlock().getY());
+        if (event.getBlock().getLocation().distance(spawn) < SpawnManager.getSpawnRadius()) {
+            if (event.getEntityType().equals(EntityType.ENDERMAN)) {
+                event.setCancelled(true);
+            }
         }
 
     }

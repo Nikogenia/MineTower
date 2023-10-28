@@ -49,7 +49,7 @@ public class TabListManager {
                 .append(Component.text(" ]     "))
                 .appendNewline()
                 .append(Component.text("     [ "))
-                .append(Component.text("Operated by Rekiboi, Obi Wlan Kenobi, Tillerheimer and bkmmoin"
+                .append(Component.text("Operated by Rekiboi, Obi Wlan Kenobi, Tillerheimer and bkmmoinn"
                 ).color(NamedTextColor.GOLD))
                 .append(Component.text(" ]     "))
                 .appendNewline()

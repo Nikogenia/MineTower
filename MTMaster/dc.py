@@ -63,8 +63,8 @@ class Docker:
         for container in self.get_containers():
             if container.name == name:
                 if since_now:
-                    return container.logs(stream=stream, since=time.time() - 5, tail=5000)
-                return container.logs(stream=stream, tail=5000)
+                    return container.logs(stream=stream, since=time.time() - 5, tail=1000)
+                return container.logs(stream=stream, tail=1000)
 
     def pull_image(self, tag):
 

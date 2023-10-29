@@ -1,0 +1,184 @@
+Project "MineTower 2.x" {
+  note: 'MySQL database of MineTower (Version 2.x)'
+}
+
+Table "player" {
+  "uuid" VARCHAR(36) [pk, not null]
+  "name" VARCHAR(16) [unique, not null]
+  "server" BIGINT [not null]
+  "online" BOOL [not null, default: "0"]
+  "playtime" BIGINT [not null]
+  "first_connect" BIGINT
+  "last_connect" BIGINT
+  "last_disconnect" BIGINT
+  "connect_count" BIGINT [not null, default: "0"]
+  "vanish" BOOL [not null, default: "0"]
+  "ban_until" BIGINT
+  "ban_reason" VARCHAR(255)
+  "status" BIGINT
+}
+
+Table "rank" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "permission" VARCHAR(255) [unique, not null]
+  "display" VARCHAR(255) [not null]
+  "color" VARCHAR(32) [not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+}
+
+Table "shop_member" {
+  "id" BIGINT [pk, not null, increment]
+  "shop" BIGINT [not null]
+  "player" VARCHAR(36) [not null]
+}
+
+Table "server" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "image" VARCHAR(32) [not null, default: "nikogenia/mt-paper"]
+  "version" VARCHAR(32) [not null, default: "latest"]
+  "memory" VARCHAR(32) [not null, default: "2048M"]
+  "agent" BIGINT [not null]
+  "host" VARCHAR(15) [not null]
+  "ports" VARCHAR(255) [not null]
+  "proxy" BIGINT [not null]
+  "address" VARCHAR(255) [unique, not null]
+  "cluster" BIGINT
+  "mode" VARCHAR(32) [not null, default: "off"]
+  "whitelist" BIGINT
+}
+
+Table "general" {
+  "name" VARCHAR(32) [pk, not null]
+  "value" TEXT [not null]
+}
+
+Table "whitelist" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+}
+
+Table "shop" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "owner" VARCHAR(36)
+  "server" BIGINT [not null]
+  "world" VARCHAR(32) [not null]
+  "area" VARCHAR(255) [not null]
+}
+
+Table "cluster" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "template" BIGINT [not null]
+  "agent" BIGINT [not null]
+  "subnet" VARCHAR(13) [not null]
+}
+
+Table "proxy" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "image" VARCHAR(32) [not null, default: "nikogenia/mt-waterfall"]
+  "version" VARCHAR(32) [not null, default: "latest"]
+  "memory" VARCHAR(32) [not null, default: "512M"]
+  "agent" BIGINT [not null]
+  "host" VARCHAR(15) [not null]
+  "ports" VARCHAR(255) [not null]
+  "mode" VARCHAR(32) [not null, default: "off"]
+  "motd" BIGINT [not null]
+  "whitelist" BIGINT
+}
+
+Table "agent" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+}
+
+Table "user" {
+  "uuid" VARCHAR(36) [pk, not null]
+  "name" VARCHAR(32) [unique, not null]
+  "password" TEXT [not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "last_login" BIGINT
+  "admin" BOOL [not null, default: "0"]
+  "read_only" BOOL [not null, default: "1"]
+}
+
+Table "home" {
+  "id" BIGINT [pk, not null, increment]
+  "player" VARCHAR(36) [not null]
+  "name" VARCHAR(32) [not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "server" BIGINT [not null]
+  "world" VARCHAR(32) [not null]
+  "x" DOUBLE [not null]
+  "y" DOUBLE [not null]
+  "z" DOUBLE [not null]
+}
+
+Table "status" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "display" VARCHAR(255) [not null]
+}
+
+Table "template" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "image" VARCHAR(32) [not null]
+  "version" VARCHAR(32) [not null, default: "latest"]
+  "memory" VARCHAR(32) [not null]
+  "ports" VARCHAR(255) [not null]
+}
+
+Table "motd" {
+  "id" BIGINT [pk, not null, increment]
+  "name" VARCHAR(32) [unique, not null]
+  "created" BIGINT [not null, default: `UNIX_TIMESTAMP()`]
+  "line1" VARCHAR(255) [not null]
+  "line2" VARCHAR(255) [not null]
+}
+
+Table "whitelist_member" {
+  "id" BIGINT [pk, not null, increment]
+  "player" VARCHAR(36) [not null]
+  "whitelist" BIGINT [not null]
+}
+
+Ref: "server"."id" < "home"."server"
+Ref: "server"."id" < "player"."server"
+Ref: "server"."id" < "shop"."server"
+
+Ref: "agent"."id" < "cluster"."agent"
+Ref: "agent"."id" < "server"."agent"
+Ref: "agent"."id" < "proxy"."agent"
+
+Ref: "player"."uuid" < "shop_member"."player"
+Ref: "player"."uuid" < "shop"."owner"
+Ref: "player"."uuid" < "home"."player"
+Ref: "player"."uuid" < "whitelist_member"."player"
+
+Ref: "template"."id" < "cluster"."template"
+
+Ref: "whitelist"."id" < "proxy"."whitelist"
+Ref: "whitelist"."id" < "server"."whitelist"
+Ref: "whitelist"."id" < "whitelist_member"."whitelist"
+
+Ref: "status"."id" < "player"."status"
+
+Ref: "cluster"."id" < "server"."cluster"
+
+Ref: "proxy"."id" < "server"."proxy"
+
+Ref: "motd"."id" < "proxy"."motd"
+
+Ref: "shop"."id" < "shop_member"."shop"

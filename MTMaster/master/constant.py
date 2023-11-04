@@ -3,6 +3,7 @@ AUTHOR = "Nikogenia"
 
 
 CONFIG_PATH = "/mt/config.yml"
+SCHEMA_PATH = "./schema/schema.sql"
 
 
 HOST_MASTER = 0, 2

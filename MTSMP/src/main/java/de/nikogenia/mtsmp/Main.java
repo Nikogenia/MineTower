@@ -27,6 +27,8 @@ public final class Main extends JavaPlugin {
 
     private HomeManager homeManager;
 
+    private boolean endDimension;
+
     @Override
     public void onLoad() {
 
@@ -57,7 +59,16 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("spawn")).setExecutor(new SpawnCommand());
         Objects.requireNonNull(getCommand("home")).setExecutor(new HomeCommand());
         Objects.requireNonNull(getCommand("sethome")).setExecutor(new SetHomeCommand());
+        Objects.requireNonNull(getCommand("end_dimension")).setExecutor(new EndDimensionCommand());
 
+        loadEndDimension();
+
+    }
+
+    public void loadEndDimension() {
+        MTBase.getSql().getSession().getTransaction().rollback();
+        MTBase.getSql().getSession().beginTransaction();
+        endDimension = MTBase.getSql().getGeneralEntry("end_dimension").equals("open");
     }
 
     @Override
@@ -85,6 +96,10 @@ public final class Main extends JavaPlugin {
 
     public static HomeManager getHomeManager() {
         return instance.homeManager;
+    }
+
+    public static boolean isEndDimension() {
+        return instance.endDimension;
     }
 
 }

@@ -1,17 +1,21 @@
 package de.nikogenia.mtsmp.listeners;
 
 import de.nikogenia.mtbase.permission.Perm;
+import de.nikogenia.mtsmp.Main;
+import de.nikogenia.mtsmp.commands.EndDimensionCommand;
 import de.nikogenia.mtsmp.spawn.SpawnManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
+import org.bukkit.PortalType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Arrays;
 
@@ -117,6 +121,30 @@ public class EntityListeners implements Listener {
 
         if (event.getEntity().getScoreboardTags().contains("protected")) {
             if (event.getRemover().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
+            event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler
+    public void onPlayerPortal(PlayerPortalEvent event) {
+
+        if (Main.isEndDimension()) return;
+
+        if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.END_PORTAL)) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(EndDimensionCommand.getPrefix()
+                    .append(Component.text("Sorry, the end dimension is closed!").color(NamedTextColor.RED)));
+        }
+
+    }
+
+    @EventHandler
+    public void onEntityPortal(EntityPortalEvent event) {
+
+        if (Main.isEndDimension()) return;
+
+        if (event.getPortalType().equals(PortalType.ENDER)) {
             event.setCancelled(true);
         }
 

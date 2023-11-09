@@ -130,5 +130,7 @@ class SQL:
 
         self.define_general_entry(session, "motd", "")
 
+        self.define_general_entry(session, "end_dimension", "open")
+
         session.commit()
         self.Session.remove()

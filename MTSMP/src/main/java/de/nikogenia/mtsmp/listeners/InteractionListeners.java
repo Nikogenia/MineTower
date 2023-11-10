@@ -166,6 +166,8 @@ public class InteractionListeners implements Listener {
     @EventHandler
     public void onInteractEntity(PlayerInteractEntityEvent event) {
 
+        if (!event.getPlayer().getWorld().getName().equals("world")) return;
+
         if (Arrays.asList(EntityType.ITEM_FRAME, EntityType.GLOW_ITEM_FRAME).contains(event.getRightClicked().getType())) {
             if (event.getPlayer().hasPermission(Perm.SPAWN_BYPASS.getValue())) return;
             if (event.getRightClicked().getScoreboardTags().contains("protected")) {
@@ -177,6 +179,8 @@ public class InteractionListeners implements Listener {
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
+
+        if (!event.getEntity().getWorld().getName().equals("world")) return;
 
         if (event.getEntityType().equals(EntityType.ENDER_PEARL)) {
             Location spawn = event.getLocation().getWorld().getSpawnLocation();

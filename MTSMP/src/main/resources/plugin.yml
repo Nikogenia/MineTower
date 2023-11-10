@@ -25,3 +25,4 @@ commands:
   end_dimension:
     description: "Manage end dimension"
     usage: "Type '/end_dimension help' for more information!"
+    permission: "minetower.end"

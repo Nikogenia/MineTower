@@ -5,7 +5,9 @@ print("MineTower Backup Script")
 print("-----------------------")
 
 import os
+import sys
 import time
+import stat
 import schedule
 
 import paramiko
@@ -34,6 +36,16 @@ def progress(downloaded, total):
     if percentage != last_percentage:
         last_percentage = percentage
         print(f"Progress: {format_size_1024(downloaded)}/{format_size_1024(total)} {percentage}%")
+
+
+def download_dir(sftp, path):
+    os.makedirs(LOCAL_PATH + path)
+    for file in sftp.listdir_attr(REMOTE_PATH + path):
+        if stat.S_ISDIR(file.st_mode):
+            download_dir(sftp, path + "/" + file.filename)
+        else:
+            print(f"Download file {path + '/' + file.filename}")
+            sftp.get(REMOTE_PATH + path + "/" + file.filename, LOCAL_PATH + path + "/" + file.filename, progress)
 
 
 def main():
@@ -65,17 +77,30 @@ def main():
 
         sftp = client.open_sftp()
 
-        print("SCAN FOR NEW FILES")
-        for file in sftp.listdir(REMOTE_PATH):
+        print("SCAN FOR NEW FILES AND DIRECTORIES")
+        for file in sftp.listdir_attr(REMOTE_PATH):
 
-            if file in local:
-                print(f"File {file} already available")
-                continue
+            if stat.S_ISDIR(file.st_mode):
 
-            print(f"New file '{file}' found")
+                if file.filename in local:
+                    print(f"Directory {file.filename} already available")
+                    continue
 
-            print("Start download")
-            sftp.get(REMOTE_PATH + file, LOCAL_PATH + file, progress)
+                print(f"New directory '{file.filename}' found")
+
+                print("Start recursive download")
+                download_dir(sftp, file.filename)
+
+            else:
+
+                if file.filename in local:
+                    print(f"File {file.filename} already available")
+                    continue
+
+                print(f"New file '{file.filename}' found")
+
+                print("Start file download")
+                sftp.get(REMOTE_PATH + file.filename, LOCAL_PATH + file.filename, progress)
 
             print("Download finished")
 
@@ -90,13 +115,17 @@ def main():
     except Exception as e:
         print(f"Error occurred: {e}")
 
-    print("SLEEP 1 HOUR")
+    print("BACKUP COMPLETED")
 
 
 if __name__ == '__main__':
 
+    if "-s" not in sys.argv:
+        main()
+        exit(0)
+
     print("Schedule tasks")
-    schedule.every().hour.at(":10").do(main)
+    schedule.every().hour.at(":20").do(main)
 
     print("Start scheduler")
     while True:

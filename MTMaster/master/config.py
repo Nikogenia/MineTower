@@ -19,14 +19,13 @@ full_name: "MineTower"
 path: "/root/minetower"  # without '/' at the end
 
 # Public URLs
-console_url: "https://console.example.xyz"
-api_url: "https://api.example.xyz"
+console_url: ["https://console.example.xyz"]
+api_url: ["https://api.example.xyz"]
 
 # Exposed ports
-mysql_port: 3342
-influxdb_port: 8042
-console_port: 3042
-api_port: 5042
+mysql_port: 43306
+console_port: 43000
+api_port: 48080
 
 # Docker
 docker_prefix: "minetower-"
@@ -36,14 +35,10 @@ docker_network_subnet: "172.22.x.y"
 # MySQL databases
 mysql_master: "minetower_master"
 mysql_luckperms: "minetower_luckperms"
-
-# InfluxDB organisation and retention
-influxdb_org: "minetower"
-influxdb_retention: "4w"
+mysql_coreprotect: "minetower_coreprotect"
 
 # Passwords (read only)
 mysql_password: "$PASSWORD1"  # DO NOT CHANGE!
-influxdb_password: "$PASSWORD2"  # DO NOT CHANGE!
 api_password: "$PASSWORD3"  # DO NOT CHANGE!
 
 """

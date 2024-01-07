@@ -83,30 +83,11 @@ class Main:
                        ],
                        {"MYSQL_ROOT_PASSWORD": self.config["mysql_password"]})
 
-        self.dc.create(self.dc.format_name("influxdb"),
-                       "influxdb",
-                       "latest",
-                       self.dc.format_host(*HOST_INFLUXDB),
-                       {"8086/tcp": self.config["influxdb_port"]},
-                       [
-                           f"{self.format_path("influxdb/config")}:/etc/influxdb2",
-                           f"{self.format_path("influxdb/data")}:/var/lib/influxdb2"
-                       ],
-                       {
-                           "DOCKER_INFLUXDB_INIT_MODE": "setup",
-                           "DOCKER_INFLUXDB_INIT_USERNAME": "root",
-                           "DOCKER_INFLUXDB_INIT_PASSWORD": self.config["influxdb_password"],
-                           "DOCKER_INFLUXDB_INIT_ORG": self.config["influxdb_org"],
-                           "DOCKER_INFLUXDB_INIT_BUCKET": "logs",
-                           "DOCKER_INFLUXDB_INIT_RETENTION": self.config["influxdb_retention"],
-                           "DOCKER_INFLUXDB_INIT_ADMIN_TOKEN": self.config["influxdb_password"]
-                       })
-
         self.dc.create(self.dc.format_name("api"),
                        "nikogenia/mt-api",
                        "latest",
                        self.dc.format_host(*HOST_API),
-                       {"5000/tcp": self.config["api_port"]},
+                       {"8080/tcp": self.config["api_port"]},
                        [f"{self.format_path("api")}:/api"],
                        {
                            "API_PASSWORD": self.config["api_password"],
@@ -125,7 +106,7 @@ class Main:
                            "API_URL": self.config["api_url"],
                        })
 
-        for name in ("mysql", "influxdb", "api", "console"):
+        for name in ("mysql", "api", "console"):
             if not self.dc.running(self.dc.format_name(name)):
                 self.dc.start(self.dc.format_name(name))
 
@@ -135,6 +116,7 @@ class Main:
             cursor = self.sql.cursor()
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.config["mysql_master"]};")
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.config["mysql_luckperms"]};")
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.config["mysql_coreprotect"]};")
             cursor.execute(f"USE {self.config["mysql_master"]};")
             self.sql.commit()
             with open(SCHEMA_PATH, "r") as file:

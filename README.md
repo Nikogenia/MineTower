@@ -1,4 +1,4 @@
 ![Logo](/MineTower.png "Logo")
 
 # MineTower
-A Minecraft server network management engine
+minecraft server network management engine
